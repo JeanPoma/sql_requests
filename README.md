@@ -2,9 +2,22 @@
 
 Ce projet propose une progression TDD pour apprendre SQL avec des **données réelles** (dataset RAWG par jummyegg).
 
-## Prérequis
-- Docker / Docker Compose
-- Fichier Kaggle: placez `rawg_games.csv` dans `data/` (dézippé)
+## Requêtes SQL
+
+Ce projet vise à s'entrainer sur les requêtes SQL à partir de données réelles. 
+
+Avant de se lancer, il est recommandé de réaliser au minimum les exercices 0, 1, 2 & 3 du site [SQL Zoo](https://sqlzoo.net/wiki/SQL_Tutorial).
+Ces exercices vous permettront de vous familiariser ou de réviser la syntaxe SQL.
+
+Tout au long des exercices, n'hésitez pas à réaliser les exercices suivants du site.
+
+Le projet contient également un document `ressources.md` qui contient des liens vers des ressources pour compléter vos connaissances.
+
+## Prérequis pour l'installation
+- Docker / Docker Compose installé sur votre poste
+- Données : 
+  - téléchargez les données [RAWG Game Dataset](https://www.kaggle.com/datasets/jummyegg/rawg-game-dataset)
+  - placez `rawg_games.csv` dans `data/` (dézippé)
 
 ## Installation
 1. Démarrer la base et créer le schéma
