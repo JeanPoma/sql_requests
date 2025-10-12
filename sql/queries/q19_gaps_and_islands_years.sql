@@ -1,0 +1,3 @@
+-- CONSIGNE: Détecter, par plateforme, les "îles" d’années contiguës où il existe au moins 1 jeu avec metacritic NOT NULL.
+-- Sortie: platform, start_year, end_year, span_years
+-- Astuce: numéroter les années et grouper par (year - ROW_NUMBER()).

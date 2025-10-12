@@ -1,0 +1,4 @@
+-- CONSIGNE: Détecter d’éventuels doublons de jeux par (name, year) et compter le nombre d’occurrences.
+-- Colonnes: name, year, n
+-- HAVING: n > 1
+-- Ordre: n DESC, name ASC

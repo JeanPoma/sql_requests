@@ -1,0 +1,3 @@
+-- CONSIGNE: Avec une CTE, filtrer les jeux avec ratings_count >= 1000, puis retourner le TOP 20 par Metacritic.
+-- Colonnes: name, metacritic, ratings_count
+-- Ordre: metacritic DESC, ratings_count DESC

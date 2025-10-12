@@ -1,0 +1,5 @@
+-- CONSIGNE: Calculer, par décennie (ex: 1990, 2000, 2010), les 3 meilleurs studios (developers) par Metacritic moyen.
+-- Colonnes: decade, developer, meta_avg, n_games
+-- Dériver decade depuis year (ex: FLOOR(year/10)*10)
+-- Filtres: year NOT NULL, metacritic NOT NULL, n_games >= 5
+-- Ordre: decade ASC, meta_avg DESC

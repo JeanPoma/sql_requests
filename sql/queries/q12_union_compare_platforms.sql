@@ -1,0 +1,4 @@
+-- CONSIGNE: Comparer deux familles de plateformes (ex: 'PC' vs 'PlayStation 4')
+--   via UNION ALL de 2 sélections homogènes.
+-- Colonnes: platform_group, meta_avg, n_games
+-- Paramètres: utilisez un IN ('PC') et un IN ('PlayStation 4') dans deux branches UNION ALL

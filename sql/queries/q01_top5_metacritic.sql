@@ -1,0 +1,4 @@
+-- CONSIGNE: Sélectionner les 5 jeux avec le meilleur Metacritic.
+-- Colonnes attendues: name, metacritic
+-- Ordre: metacritic DESC, puis ratings_count DESC, puis name ASC
+-- Limiter à 5 lignes.

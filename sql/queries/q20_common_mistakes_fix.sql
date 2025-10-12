@@ -1,0 +1,6 @@
+-- CONSIGNE: Exercice de correction.
+-- Un analyste a écrit une requête avec une mauvaise jointure (ex: genres mal reliés) et un GROUP BY incomplet.
+-- Réécrire la requête correcte: 
+--   But: par genre, nombre de jeux et metacritic moyen (g.metacritic), year NOT NULL.
+-- Colonnes: genre, n_games, meta_avg
+-- Ordre: n_games DESC

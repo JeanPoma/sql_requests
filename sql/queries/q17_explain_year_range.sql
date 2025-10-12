@@ -1,0 +1,2 @@
+-- CONSIGNE: Écrire la requête du fichier précédent, mais ici vous ne mettez que la requête principale (sans EXPLAIN).
+-- Le test appellera EXPLAIN sur ce SQL et vérifiera l’utilisation de l’index.

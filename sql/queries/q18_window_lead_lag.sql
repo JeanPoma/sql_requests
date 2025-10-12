@@ -1,0 +1,2 @@
+-- CONSIGNE: Utiliser LAG/LEAD pour comparer le Metacritic d’un jeu à celui du jeu précédent de la même plateforme (ordonné par year desc, puis metacritic desc).
+-- Colonnes: platform, name, year, metacritic, prev_meta, diff_meta

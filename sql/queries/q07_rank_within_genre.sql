@@ -1,0 +1,5 @@
+-- CONSIGNE: Pour chaque genre, classer les jeux par Metacritic et exposer le rang.
+-- Colonnes: genre, name, metacritic, rnk
+-- Filtres: metacritic NOT NULL
+-- Ordre final: genre ASC, rnk ASC
+-- Option: limiter à rnk<=5 pour réduire la taille.

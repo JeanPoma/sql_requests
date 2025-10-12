@@ -1,0 +1,5 @@
+-- CHALLENGE: Créer des vues réutilisables.
+-- (A) vw_game_global(name, year, metacritic, rating, ratings_count)
+-- (B) vw_game_genre(game_id, name, genre)
+-- (C) vw_game_platform(game_id, name, platform)
+-- Note: ce fichier ne sera pas exécuté automatiquement. Vous pouvez créer vos vues via un script manuel.

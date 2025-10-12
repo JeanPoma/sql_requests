@@ -1,0 +1,4 @@
+-- CONSIGNE: Calculer, pour chaque année, le percentile (ex: P90) du Metacritic.
+-- Colonnes: year, p90
+-- Astuce: MariaDB peut simuler un percentile via window (PERCENT_RANK) et/ou en combinant NTILE; 
+-- acceptez une approximation robuste (ex: valeur au rang ceil(0.9*n)).

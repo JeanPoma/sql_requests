@@ -1,0 +1,3 @@
+-- CONSIGNE: Produire une requête sélective sur games.year pour tirer parti de l’index idx_games_year.
+-- Par exemple: WHERE year BETWEEN 2005 AND 2015
+-- Colonnes: id, name, year

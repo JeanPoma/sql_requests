@@ -1,0 +1,5 @@
+-- CONSIGNE: Produire la même sortie par deux approches:
+--   (A) Sous-requête corrélée pour récupérer le Metacritic max par développeur
+--   (B) Équivalent avec GROUP BY + JOIN
+-- Colonnes attendues: developer, max_meta
+-- Note: Vous pouvez n’implémenter que la (B) dans ce fichier (la (A) sera vérifiée dans le test).

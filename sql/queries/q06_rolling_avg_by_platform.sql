@@ -1,0 +1,5 @@
+-- CONSIGNE: Par plateforme et année, calculer la moyenne mobile (fenêtre) du Metacritic sur 3 années (courante et 2 précédentes).
+-- Colonnes: platform, year, meta_avg_roll
+-- Indices: utiliser window frame ROWS/RANGE approprié.
+-- Filtres: year NOT NULL, metacritic NOT NULL.
+-- Ordre final: platform ASC, year ASC

@@ -1,0 +1,8 @@
+-- CONSIGNE: Calculer, pour chaque couple (genre, plateforme), le Metacritic moyen et le nombre de jeux.
+-- Colonnes: genre, platform, meta_avg, n_games
+-- Jointures: games -> game_genres -> genres; games -> game_platforms -> platforms
+-- Filtres: garder uniquement les jeux avec metacritic NOT NULL
+-- Agrégation: AVG(metacritic), COUNT(*)
+-- HAVING: n_games >= 20
+-- Ordre: meta_avg DESC, n_games DESC
+-- Limit: 50

@@ -1,0 +1,6 @@
+-- CONSIGNE: Compter le nombre de jeux par tag, et donner le Metacritic moyen.
+-- Colonnes: tag, n_games, meta_avg
+-- Filtres: optionnel tag NOT NULL; metacritic facultatif pour la moyenne
+-- Having: n_games >= 50
+-- Ordre: n_games DESC, meta_avg DESC
+-- Limit: 100

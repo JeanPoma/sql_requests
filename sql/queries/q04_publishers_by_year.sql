@@ -1,0 +1,8 @@
+-- CONSIGNE: Par éditeur et par année, compter le nombre de jeux et le Metacritic moyen.
+-- Colonnes: publisher, year, nb, meta_avg
+-- Jointures: games -> game_publishers -> publishers
+-- Filtres: year NOT NULL
+-- Group by: publisher, year
+-- Having: nb >= 10
+-- Order: meta_avg DESC, nb DESC
+-- Limit: 50

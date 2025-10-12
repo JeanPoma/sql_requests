@@ -1,0 +1,5 @@
+-- CONSIGNE: Pour chaque année, retourner le TOP 3 des jeux par Metacritic.
+-- Utiliser une fonction de fenêtre (DENSE_RANK ou RANK) partitionnée par year, ordonnée par metacritic DESC puis ratings_count DESC.
+-- Colonnes: year, name, metacritic, rnk
+-- Filtres: year NOT NULL, metacritic NOT NULL; garder rnk <= 3
+-- Ordre final: year DESC, rnk ASC

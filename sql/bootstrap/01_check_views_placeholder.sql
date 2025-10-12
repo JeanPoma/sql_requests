@@ -1,0 +1,1 @@
+-- (placeholder) fichier vide pour illustrer un éventuel bootstrap supplémentaire

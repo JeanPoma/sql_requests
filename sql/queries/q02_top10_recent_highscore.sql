@@ -1,0 +1,5 @@
+-- CONSIGNE: Lister les 10 meilleurs jeux sortis en 2015 ou après.
+-- Colonnes: name, year, metacritic, ratings_count
+-- Filtres: year >= 2015 AND metacritic IS NOT NULL
+-- Ordre: metacritic DESC, ratings_count DESC
+-- Limit: 10

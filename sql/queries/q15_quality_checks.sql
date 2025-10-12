@@ -1,0 +1,5 @@
+-- CONSIGNE: Contrôles qualité basiques du dataset.
+-- (1) part de lignes avec year IS NULL
+-- (2) part de lignes avec metacritic IS NULL
+-- (3) distribution par ESRB (si dispo)
+-- Retourner 3 requêtes séparées, ou une requête UNION ALL avec un champ check_name.

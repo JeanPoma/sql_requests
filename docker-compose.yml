@@ -1,0 +1,22 @@
+services:
+  mariadb:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: secret
+      MARIADB_DATABASE: vg
+    ports: ["3306:3306"]
+    volumes:
+      - ./sql/schema:/docker-entrypoint-initdb.d
+      - dbdata:/var/lib/mysql
+  app:
+    image: python:3.11-slim
+    depends_on: [mariadb]
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      DB_URL: mariadb+mariadbconnector://root:secret@mariadb:3306/vg
+      CSV_PATH: data/rawg_games.csv
+    command: bash -lc "pip install -r requirements.txt && pytest -q"
+volumes:
+  dbdata:
