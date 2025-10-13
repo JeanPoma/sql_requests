@@ -3,7 +3,7 @@ from .helpers import run_sql_file, MissingQueryError
 
 def test_top10_recent_highscore(conn):
     try:
-        rows = run_sql_file(conn, "sql/queries/q02_top10_recent_highscore.sql")
+        rows = run_sql_file(conn, "../sql/queries/q02_top10_recent_highscore.sql")
     except MissingQueryError:
         pytest.skip("Requête non encore écrite")
     assert len(rows) == 10

@@ -3,7 +3,7 @@ from .helpers import run_sql_file, MissingQueryError
 
 def test_top5_metacritic(conn):
     try:
-        rows = run_sql_file(conn, "sql/queries/q01_top5_metacritic.sql")
+        rows = run_sql_file(conn, "../sql/queries/q01_top5_metacritic.sql")
     except MissingQueryError:
         pytest.skip("Requête non encore écrite")
     assert len(rows) == 5

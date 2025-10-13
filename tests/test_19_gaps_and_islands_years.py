@@ -3,7 +3,7 @@ from .helpers import run_sql_file, MissingQueryError
 
 def test_gaps_and_islands_years(conn):
     try:
-        rows = run_sql_file(conn, "sql/queries/q19_gaps_and_islands_years.sql")
+        rows = run_sql_file(conn, "../sql/queries/q19_gaps_and_islands_years.sql")
     except MissingQueryError:
         pytest.skip("Requête non encore écrite")
     assert rows

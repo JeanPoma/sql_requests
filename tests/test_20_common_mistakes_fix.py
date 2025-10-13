@@ -3,7 +3,7 @@ from .helpers import run_sql_file, MissingQueryError
 
 def test_common_mistakes_fix(conn):
     try:
-        rows = run_sql_file(conn, "sql/queries/q20_common_mistakes_fix.sql")
+        rows = run_sql_file(conn, "../sql/queries/q20_common_mistakes_fix.sql")
     except MissingQueryError:
         pytest.skip("Requête non encore écrite")
     assert rows

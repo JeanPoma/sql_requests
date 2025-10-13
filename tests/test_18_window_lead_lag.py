@@ -3,7 +3,7 @@ from .helpers import run_sql_file, MissingQueryError
 
 def test_window_lead_lag(conn):
     try:
-        rows = run_sql_file(conn, "sql/queries/q18_window_lead_lag.sql")
+        rows = run_sql_file(conn, "../sql/queries/q18_window_lead_lag.sql")
     except MissingQueryError:
         pytest.skip("Requête non encore écrite")
     assert rows
