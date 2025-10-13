@@ -3,7 +3,7 @@ from .helpers import run_sql_file, MissingQueryError
 
 def test_genre_platform_score(conn):
     try:
-        rows = run_sql_file(conn, "../sql/queries/q03_genre_platform_score.sql")
+        rows = run_sql_file(conn, "sql/queries/q03_genre_platform_score.sql")
     except MissingQueryError:
         pytest.skip("Requête non encore écrite")
     assert rows

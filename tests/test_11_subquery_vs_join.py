@@ -4,7 +4,7 @@ from .helpers import run_sql_file, MissingQueryError
 
 def test_subquery_vs_join(conn):
     try:
-        rows_b = run_sql_file(conn, "../sql/queries/q11_subquery_vs_join.sql")
+        rows_b = run_sql_file(conn, "sql/queries/q11_subquery_vs_join.sql")
     except MissingQueryError:
         pytest.skip("Requête non encore écrite")
     assert rows_b

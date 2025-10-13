@@ -4,7 +4,7 @@ from sqlalchemy import text
 
 def test_explain_year_range(conn):
     try:
-        with open("../sql/queries/q17_explain_year_range.sql", "r", encoding="utf-8") as f:
+        with open("sql/queries/q17_explain_year_range.sql", "r", encoding="utf-8") as f:
             sql = f.read().strip()
         if not sql:
             raise FileNotFoundError
