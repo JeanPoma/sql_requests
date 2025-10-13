@@ -1,2 +1,4 @@
-./data/game_info.csv
+./data/rawg_games.csv
 .idea
+*/__pycache__
+

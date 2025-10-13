@@ -23,14 +23,19 @@ Le projet contient également un document `ressources.md` qui contient des liens
 1. Démarrer la base et créer le schéma
    ```bash
    docker compose up -d mariadb
+   docker compose up -d adminer
    ```
-2. Charger le dataset dans MariaDB
+2. Installer les dépendances python dans le container app :
    ```bash
-   docker compose run --rm app python scripts/load_rawg_csv.py
+   docker compose run -d --name vg-app app bash -lc "pip install -r requirements.txt && tail -f /dev/null"
+   ```
+3. Charger le dataset dans MariaDB
+   ```bash
+   docker exec -it vg-app python scripts/load_rawg_csv.py
    ```
 3. Lancer la suite de tests (TDD)
    ```bash
-   docker compose run --rm app pytest -q
+   docker exec -it vg-app pytest -q
    ```
 
 ## Où écrire le SQL ?

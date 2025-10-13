@@ -1,5 +1,5 @@
 pytest
 SQLAlchemy
-mariadb
 pandas
 python-dotenv
+pymysql

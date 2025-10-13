@@ -1,7 +1,7 @@
 import os, pytest, sqlalchemy as sa
 from sqlalchemy import text
 
-DB_URL = os.getenv("DB_URL", "mariadb+mariadbconnector://root:secret@mariadb:3306/vg")
+DB_URL = os.getenv("DB_URL", "mysql+pymysql://root:secret@mariadb:3306/vg")
 
 @pytest.fixture(scope="session")
 def engine():

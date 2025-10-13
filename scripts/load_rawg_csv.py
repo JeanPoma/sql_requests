@@ -3,7 +3,7 @@ import sqlalchemy as sa
 from sqlalchemy import text
 from datetime import datetime
 
-DB_URL = os.getenv("DB_URL", "mariadb+mariadbconnector://root:secret@mariadb:3306/vg")
+DB_URL = os.getenv("DB_URL", "mysql+pymysql://root:secret@mariadb:3306/vg")
 CSV_PATH = os.getenv("CSV_PATH", "data/rawg_games.csv")
 SEP = "||"  # séparateur de listes dans le CSV Kaggle (jummyegg)
 
@@ -25,7 +25,9 @@ def main():
     eng = sa.create_engine(DB_URL, pool_pre_ping=True)
     with eng.begin() as conn:
         chunks = pd.read_csv(CSV_PATH, chunksize=5000)
+        # print(chunks)
         for df in chunks:
+            print(df)
             cols = {c.lower(): c for c in df.columns}
             get = lambda k: cols.get(k)
             for _, r in df.iterrows():
@@ -47,6 +49,7 @@ def main():
                     VALUES(:rid,:n,:rel,:y,:m,:r,:rc,:pt,:esrb)
                     """
                 ), dict(rid=rawg_id, n=name, rel=released, y=year, m=metacritic, r=rating, rc=ratings_count, pt=playtime, esrb=esrb))
+                # print(res.lastrowid)
                 game_id = res.lastrowid
                 if not game_id:
                     game_id = conn.execute(text(
