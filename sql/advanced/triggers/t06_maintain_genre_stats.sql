@@ -1,0 +1,116 @@
+-- ============================================
+-- EXERCICE: Trigger pour vue matérialisée
+-- NIVEAU: 🔴 Avancé - Triggers
+-- CONCEPTS: Materialized views, denormalization, performance
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
+-- - [INSERT ON DUPLICATE KEY UPDATE](https://mariadb.com/kb/en/insert-on-duplicate-key-update/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer une "vue matérialisée" (table de statistiques)
+-- maintenue automatiquement par des triggers.
+--
+-- 💡 VUE MATÉRIALISÉE:
+-- MariaDB n'a pas de vraies vues matérialisées, mais on peut
+-- les simuler avec:
+-- - Une table de stats
+-- - Des triggers qui la mettent à jour automatiquement
+--
+-- Avantages:
+-- - Performance (pas de calcul à chaque SELECT)
+-- - Stats toujours à jour
+--
+-- Inconvénients:
+-- - Overhead sur INSERT/UPDATE/DELETE
+-- - Complexité accrue
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une table 'genre_stats' qui maintient des statistiques
+-- par genre, puis des triggers pour la mettre à jour.
+--
+-- Étape 1: Créer la table genre_stats
+-- CREATE TABLE IF NOT EXISTS genre_stats (
+--     genre_id INT PRIMARY KEY,
+--     genre_name VARCHAR(100),
+--     total_games INT DEFAULT 0,
+--     avg_metacritic DECIMAL(5,2),
+--     last_updated DATETIME,
+--     FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
+-- );
+--
+-- Étape 2: Créer le trigger pour INSERT
+-- Nom: trg_maintain_genre_stats_insert
+-- Table: game_genres
+-- Moment: AFTER INSERT
+--
+-- Action:
+-- Recalculer les stats du genre concerné et mettre à jour genre_stats
+-- en utilisant INSERT ... ON DUPLICATE KEY UPDATE
+--
+-- 💡 SYNTAXE:
+-- DELIMITER //
+-- CREATE TRIGGER trg_maintain_genre_stats_insert
+-- AFTER INSERT ON game_genres
+-- FOR EACH ROW
+-- BEGIN
+--     -- Variables pour stocker les stats
+--     DECLARE v_total INT;
+--     DECLARE v_avg DECIMAL(5,2);
+--     DECLARE v_genre_name VARCHAR(100);
+--
+--     -- Récupérer le nom du genre
+--     SELECT name INTO v_genre_name FROM genres WHERE id = NEW.genre_id;
+--
+--     -- Calculer les stats
+--     SELECT COUNT(*), ROUND(AVG(g.metacritic), 2)
+--     INTO v_total, v_avg
+--     FROM game_genres gg
+--     JOIN games g ON gg.game_id = g.id
+--     WHERE gg.genre_id = NEW.genre_id
+--     AND g.metacritic IS NOT NULL;
+--
+--     -- Mettre à jour ou insérer
+--     INSERT INTO genre_stats (genre_id, genre_name, total_games, avg_metacritic, last_updated)
+--     VALUES (NEW.genre_id, v_genre_name, v_total, v_avg, NOW())
+--     ON DUPLICATE KEY UPDATE
+--         total_games = v_total,
+--         avg_metacritic = v_avg,
+--         last_updated = NOW();
+-- END //
+-- DELIMITER ;
+--
+-- 💡 INSERT ON DUPLICATE KEY UPDATE:
+-- Cette syntaxe permet de faire un "UPSERT":
+-- - Si la clé primaire existe → UPDATE
+-- - Si la clé primaire n'existe pas → INSERT
+--
+-- Très utile pour maintenir des tables de stats.
+--
+-- 💡 UTILISATION:
+-- -- Ajouter un jeu à un genre
+-- INSERT INTO game_genres (game_id, genre_id) VALUES (123, 5);
+--
+-- -- Vérifier les stats
+-- SELECT * FROM genre_stats WHERE genre_id = 5;
+--
+-- 💡 POUR ALLER PLUS LOIN:
+-- Dans un système complet, il faudrait aussi des triggers pour:
+-- - AFTER UPDATE sur games (quand metacritic change)
+-- - AFTER DELETE sur game_genres
+-- - AFTER DELETE sur games
+--
+-- 💡 ALTERNATIVE: RECALCUL PÉRIODIQUE
+-- Au lieu de triggers (overhead sur chaque opération),
+-- on peut recalculer les stats périodiquement (cron job):
+-- - Plus simple
+-- - Moins de load sur les écritures
+-- - Stats légèrement en retard
+--
+-- 💡 CAS D'USAGE:
+-- - Dashboards temps réel
+-- - Leaderboards
+-- - Statistiques complexes coûteuses à calculer
+-- ============================================
+

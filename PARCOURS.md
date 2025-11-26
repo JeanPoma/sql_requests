@@ -404,6 +404,121 @@ Focus sur la performance :
 
 ---
 
+## ⚫ Module Avancé : Programmation SQL
+
+Ce module introduit les objets SQL avancés pour structurer, automatiser et sécuriser vos données.
+
+**Durée estimée** : 8-10 heures
+**Prérequis** : Avoir complété au moins les niveaux Débutant et Intermédiaire
+**Emplacement** : `sql/advanced/` (views, procedures, triggers)
+
+### 📊 Vues (Views) - v01 à v06
+
+**Concept** : Les vues sont des "tables virtuelles" basées sur des requêtes SELECT. Elles permettent de simplifier les requêtes complexes, encapsuler la logique métier, et contrôler l'accès aux données.
+
+| Exercice | Titre | Concepts | Documentation |
+|----------|-------|----------|---------------|
+| **v01** | Vue simple (agrégation par genre) | CREATE VIEW, agrégations | [CREATE VIEW](https://mariadb.com/kb/en/create-view/) |
+| **v02** | Top jeux par plateforme | Vues avec jointures | [Views Overview](https://mariadb.com/kb/en/views/) |
+| **v03** | Jeux récents (année paramétrable) | Vues avec filtres | [View Algorithms](https://mariadb.com/kb/en/view-algorithms/) |
+| **v04** | Stats plateformes (matérialisée) | Simulation vue matérialisée | [Views](https://mariadb.com/kb/en/views/) |
+| **v05** | Jeux multigenres | Vue avec UNION | [CREATE VIEW](https://mariadb.com/kb/en/create-view/) |
+| **v06** | Vue basique (games) | Vue simple sur table | [Views](https://mariadb.com/kb/en/views/) |
+
+**Cas d'usage** :
+- Simplifier les requêtes complexes utilisées fréquemment
+- Créer des "couches de données" pour différents utilisateurs
+- Cacher la complexité du schéma aux applications
+
+**🧪 Tests** : `pytest tests/test_advanced/test_views.py`
+
+---
+
+### 🔧 Procédures Stockées - p01 à p06
+
+**Concept** : Les procédures stockées sont des blocs de code SQL réutilisables stockés dans la base de données. Elles permettent d'automatiser des traitements, centraliser la logique métier, et améliorer les performances.
+
+| Exercice | Titre | Concepts | Documentation |
+|----------|-------|----------|---------------|
+| **p01** | Cleanup (sans paramètres) | CREATE PROCEDURE, ROW_COUNT() | [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/) |
+| **p02** | Recherche par score (IN) | Paramètres IN, filtres dynamiques | [Procedure Parameters](https://mariadb.com/kb/en/create-procedure/#parameters) |
+| **p03** | Stats genre (OUT) | Paramètres OUT, SELECT INTO | [SELECT INTO](https://mariadb.com/kb/en/selectinto/) |
+| **p04** | Classification jeu (IF/ELSE) | Logique conditionnelle, variables | [IF Statement](https://mariadb.com/kb/en/if/) |
+| **p05** | Mise à jour catégories (CURSOR) | Curseur, LOOP, HANDLER | [CURSOR](https://mariadb.com/kb/en/cursor-overview/) |
+| **p06** | Insertion sécurisée (transactions) | Transactions, gestion d'erreurs, ROLLBACK | [Transactions](https://mariadb.com/kb/en/transactions/) |
+
+**Cas d'usage** :
+- Automatiser des traitements complexes (ETL, batch)
+- Centraliser la logique métier dans la base
+- Améliorer la sécurité (permissions granulaires)
+- Réduire les allers-retours réseau
+
+**🧪 Tests** : `pytest tests/test_advanced/test_procedures.py`
+
+---
+
+### ⚡ Triggers (Déclencheurs) - t01 à t06
+
+**Concept** : Les triggers sont des procédures qui s'exécutent automatiquement en réponse à des événements (INSERT, UPDATE, DELETE). Ils permettent d'automatiser des actions, maintenir l'intégrité des données, et créer des audit trails.
+
+| Exercice | Titre | Concepts | Documentation |
+|----------|-------|----------|---------------|
+| **t01** | Validation insertion (BEFORE INSERT) | BEFORE INSERT, SIGNAL, validation | [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/) |
+| **t02** | Audit log (AFTER INSERT) | AFTER INSERT, audit trail, logging | [Trigger Overview](https://mariadb.com/kb/en/triggers/) |
+| **t03** | Historique modifications (BEFORE UPDATE) | BEFORE UPDATE, OLD vs NEW, historique | [Trigger OLD/NEW](https://mariadb.com/kb/en/trigger-overview/#old-and-new) |
+| **t04** | Notifications (AFTER UPDATE) | AFTER UPDATE, conditions métier, CONCAT | [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/) |
+| **t05** | Protection suppression (BEFORE DELETE) | BEFORE DELETE, protection, SIGNAL | [SIGNAL](https://mariadb.com/kb/en/signal/) |
+| **t06** | Vue matérialisée (maintenance) | Triggers complexes, INSERT ON DUPLICATE KEY | [INSERT ON DUPLICATE KEY](https://mariadb.com/kb/en/insert-on-duplicate-key-update/) |
+
+**Cas d'usage** :
+- Valider les données avant insertion (contraintes métier)
+- Créer des audit trails automatiques (traçabilité, RGPD)
+- Maintenir des statistiques en temps réel
+- Protéger contre les suppressions accidentelles
+- Implémenter des vues matérialisées
+
+**🧪 Tests** : `pytest tests/test_advanced/test_triggers.py`
+
+---
+
+### 📋 Parcours recommandé pour le Module Avancé
+
+#### Option 1 : Parcours séquentiel (recommandé pour débutants)
+1. **Vues d'abord** (v01 → v06) : Comprendre les objets en lecture seule
+2. **Procédures ensuite** (p01 → p06) : Automatiser les traitements
+3. **Triggers enfin** (t01 → t06) : Réactions automatiques aux événements
+
+#### Option 2 : Parcours thématique (pour développeurs expérimentés)
+1. **Bases** : v01, v06, p01, p02 (objets simples)
+2. **Logique avancée** : p03, p04, p05 (paramètres, conditions, curseurs)
+3. **Automatisation** : t01, t02, t03, t04 (validation, audit, notifications)
+4. **Optimisation** : v04, t06 (vues matérialisées)
+5. **Sécurité** : p06, t05 (transactions, protection)
+
+#### Option 3 : Parcours par cas d'usage
+- **Reporting/BI** : v01, v02, v03, v05 (vues pour simplifier les requêtes)
+- **ETL/Data Engineering** : p01, p05, p06 (procédures pour automatiser)
+- **Audit/Conformité** : t02, t03, t04 (traçabilité des modifications)
+- **Data Quality** : t01, t05 (validation et protection des données)
+
+---
+
+### 🎯 Compétences acquises (Module Avancé)
+
+À la fin de ce module, vous maîtriserez :
+- ✅ Créer et utiliser des **vues** pour simplifier les requêtes
+- ✅ Écrire des **procédures stockées** avec paramètres IN/OUT
+- ✅ Implémenter des **triggers** BEFORE/AFTER sur INSERT/UPDATE/DELETE
+- ✅ Gérer les **transactions** et la **gestion d'erreurs**
+- ✅ Utiliser des **curseurs** pour parcourir des résultats
+- ✅ Créer des **audit trails** automatiques
+- ✅ Valider les données avec des **triggers de validation**
+- ✅ Simuler des **vues matérialisées**
+
+**Vous êtes maintenant prêt pour des architectures SQL avancées et des postes en Database Development !** 🚀
+
+---
+
 ## 💡 Conseils de Progression
 
 ### Stratégie d'apprentissage

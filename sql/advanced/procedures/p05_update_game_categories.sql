@@ -1,0 +1,83 @@
+-- ============================================
+-- EXERCICE: Procédure avec curseur (LOOP)
+-- NIVEAU: 🔴 Avancé - Procédures Stockées
+-- CONCEPTS: CURSOR, LOOP, HANDLER
+--
+-- 📚 Documentation MariaDB :
+-- - [CURSOR](https://mariadb.com/kb/en/cursor-overview/)
+-- - [LOOP](https://mariadb.com/kb/en/loop/)
+-- - [Handlers](https://mariadb.com/kb/en/declare-handler/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Utiliser un curseur pour parcourir un ensemble de résultats
+-- ligne par ligne et effectuer un traitement sur chacune.
+--
+-- 💡 CURSEUR (CURSOR):
+-- Un curseur permet de parcourir les résultats d'une requête
+-- une ligne à la fois, comme une boucle for.
+--
+-- Étapes:
+-- 1. DECLARE CURSOR FOR SELECT ...
+-- 2. DECLARE CONTINUE HANDLER FOR NOT FOUND
+-- 3. OPEN cursor
+-- 4. LOOP + FETCH
+-- 5. CLOSE cursor
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une procédure 'sp_update_game_categories' qui parcourt
+-- tous les jeux avec un score et effectue un traitement.
+--
+-- Nom: sp_update_game_categories
+-- Paramètres: AUCUN
+--
+-- Action:
+-- Parcourir tous les jeux avec metacritic NOT NULL
+-- (Dans cet exercice, on ne fait qu'un parcours de démonstration)
+--
+-- Retour: SELECT 'Categories updated' AS result;
+--
+-- 💡 STRUCTURE:
+-- DELIMITER //
+-- CREATE PROCEDURE sp_update_game_categories()
+-- BEGIN
+--     DECLARE done INT DEFAULT FALSE;
+--     DECLARE gid INT;
+--     DECLARE score INT;
+--     
+--     -- Définir le curseur
+--     DECLARE cur CURSOR FOR 
+--         SELECT id, metacritic 
+--         FROM games 
+--         WHERE metacritic IS NOT NULL 
+--         LIMIT 100;  -- Limiter pour la démo
+--     
+--     -- Handler pour fin de curseur
+--     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+--     
+--     OPEN cur;
+--     
+--     read_loop: LOOP
+--         FETCH cur INTO gid, score;
+--         IF done THEN
+--             LEAVE read_loop;
+--         END IF;
+--         
+--         -- Traitement sur chaque jeu
+--         -- (ici on ne fait rien, c'est juste une démo)
+--         
+--     END LOOP;
+--     
+--     CLOSE cur;
+--     SELECT 'Categories updated' AS result;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- CALL sp_update_game_categories();
+--
+-- 💡 QUAND UTILISER UN CURSEUR ?
+-- - Rarement ! Les curseurs sont lents.
+-- - Préférez les opérations ensemblistes (UPDATE WHERE ...)
+-- - Utile uniquement pour logique complexe ligne par ligne
+-- ============================================

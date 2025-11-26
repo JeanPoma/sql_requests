@@ -1,0 +1,89 @@
+-- ============================================
+-- EXERCICE: Procédure avec gestion d'erreurs et transactions
+-- NIVEAU: 🔴 Avancé - Procédures Stockées
+-- CONCEPTS: Transactions, HANDLER, ROLLBACK, validation
+--
+-- 📚 Documentation MariaDB :
+-- - [Transactions](https://mariadb.com/kb/en/transactions/)
+-- - [HANDLER](https://mariadb.com/kb/en/declare-handler/)
+-- - [ROLLBACK](https://mariadb.com/kb/en/rollback/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Gérer les erreurs avec des HANDLER et utiliser des transactions
+-- pour garantir l'intégrité des données.
+--
+-- 💡 TRANSACTIONS:
+-- START TRANSACTION; -- Début
+-- ... opérations ...
+-- COMMIT; -- Valider
+-- ROLLBACK; -- Annuler
+--
+-- 💡 HANDLER FOR SQLEXCEPTION:
+-- Capture toutes les erreurs SQL et permet de faire un rollback.
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une procédure 'sp_insert_game_safe' qui insère un jeu
+-- avec validation et gestion d'erreurs.
+--
+-- Nom: sp_insert_game_safe
+-- Paramètres:
+-- - IN game_name VARCHAR(255)
+-- - IN game_year INT
+-- - IN game_score INT
+-- - OUT success BOOLEAN
+-- - OUT error_msg VARCHAR(255)
+--
+-- Validations:
+-- - year doit être entre 1970 et année courante
+-- - score doit être entre 0 et 100
+--
+-- En cas de succès: success = TRUE, error_msg = 'Insertion réussie'
+-- En cas d'erreur: success = FALSE, error_msg = description de l'erreur
+--
+-- 💡 STRUCTURE:
+-- DELIMITER //
+-- CREATE PROCEDURE sp_insert_game_safe(
+--     IN game_name VARCHAR(255),
+--     IN game_year INT,
+--     IN game_score INT,
+--     OUT success BOOLEAN,
+--     OUT error_msg VARCHAR(255)
+-- )
+-- BEGIN
+--     -- Handler pour les erreurs SQL
+--     DECLARE EXIT HANDLER FOR SQLEXCEPTION
+--     BEGIN
+--         SET success = FALSE;
+--         SET error_msg = 'Erreur SQL lors de l\'insertion';
+--         ROLLBACK;
+--     END;
+--     
+--     START TRANSACTION;
+--     
+--     -- Validations
+--     IF game_year < 1970 OR game_year > YEAR(CURDATE()) THEN
+--         SET success = FALSE;
+--         SET error_msg = 'Année invalide';
+--     ELSEIF game_score < 0 OR game_score > 100 THEN
+--         SET success = FALSE;
+--         SET error_msg = 'Score invalide';
+--     ELSE
+--         -- Insertion
+--         INSERT INTO games (name, year, metacritic) 
+--         VALUES (game_name, game_year, game_score);
+--         
+--         SET success = TRUE;
+--         SET error_msg = 'Insertion réussie';
+--         COMMIT;
+--     END IF;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- CALL sp_insert_game_safe('Test Game', 2023, 85, @ok, @msg);
+-- SELECT @ok, @msg;
+--
+-- CALL sp_insert_game_safe('Bad Year', 1800, 85, @ok, @msg);
+-- SELECT @ok, @msg;  -- Devrait retourner FALSE
+-- ============================================

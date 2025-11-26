@@ -80,7 +80,52 @@ Le projet propose **3 niveaux de difficulté** pour une progression adaptée :
 | **q18** | LEAD/LAG (fenêtres avancées) |
 | **q19** | Gaps & Islands (séquences) |
 | **q20** | Erreurs SQL courantes à corriger |
-| **BONUS** | Création de vues (views) |
+
+### ⚫ **Module Avancé : Programmation SQL** (environ 8-10h)
+**Objectif** : Maîtriser les objets avancés de SQL (vues, procédures stockées, triggers)
+
+#### 📊 **Vues (Views)**
+Création de vues pour simplifier les requêtes complexes et encapsuler la logique métier.
+
+| Exercice | Concepts clés | Documentation |
+|----------|---------------|---------------|
+| **v01** | Vue simple avec agrégation | [CREATE VIEW](https://mariadb.com/kb/en/create-view/) |
+| **v02** | Vue avec jointures | [Views Overview](https://mariadb.com/kb/en/views/) |
+| **v03** | Vue avec filtre paramétrable | [View Algorithms](https://mariadb.com/kb/en/view-algorithms/) |
+| **v04** | Vue matérialisée (simulation) | [Materialized Views](https://mariadb.com/kb/en/views/) |
+| **v05** | Vue avec UNION | [CREATE VIEW](https://mariadb.com/kb/en/create-view/) |
+| **v06** | Vue basique (games) | [Views](https://mariadb.com/kb/en/views/) |
+
+#### 🔧 **Procédures Stockées (Stored Procedures)**
+Création de procédures pour automatiser des traitements et centraliser la logique.
+
+| Exercice | Concepts clés | Documentation |
+|----------|---------------|---------------|
+| **p01** | Procédure simple sans paramètres | [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/) |
+| **p02** | Procédure avec IN parameter | [Procedure Parameters](https://mariadb.com/kb/en/create-procedure/#parameters) |
+| **p03** | Procédure avec OUT parameters | [SELECT INTO](https://mariadb.com/kb/en/selectinto/) |
+| **p04** | Logique conditionnelle (IF/ELSE) | [IF Statement](https://mariadb.com/kb/en/if/) |
+| **p05** | Curseur (LOOP) | [CURSOR](https://mariadb.com/kb/en/cursor-overview/) |
+| **p06** | Transactions et gestion d'erreurs | [Transactions](https://mariadb.com/kb/en/transactions/) |
+
+#### ⚡ **Triggers (Déclencheurs)**
+Création de triggers pour automatiser des actions en réponse à des événements.
+
+| Exercice | Concepts clés | Documentation |
+|----------|---------------|---------------|
+| **t01** | BEFORE INSERT avec validation | [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/) |
+| **t02** | AFTER INSERT pour audit log | [Trigger Overview](https://mariadb.com/kb/en/triggers/) |
+| **t03** | BEFORE UPDATE avec historique | [Trigger OLD/NEW](https://mariadb.com/kb/en/trigger-overview/#old-and-new) |
+| **t04** | AFTER UPDATE pour notifications | [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/) |
+| **t05** | BEFORE DELETE avec protection | [SIGNAL](https://mariadb.com/kb/en/signal/) |
+| **t06** | Maintenance de vue matérialisée | [INSERT ON DUPLICATE KEY](https://mariadb.com/kb/en/insert-on-duplicate-key-update/) |
+
+**📍 Emplacement** : Les exercices du module avancé sont dans `sql/advanced/` :
+- `sql/advanced/views/` : Exercices sur les vues (v01-v06)
+- `sql/advanced/procedures/` : Exercices sur les procédures (p01-p06)
+- `sql/advanced/triggers/` : Exercices sur les triggers (t01-t06)
+
+**🧪 Tests** : `pytest tests/test_advanced/`
 
 ---
 

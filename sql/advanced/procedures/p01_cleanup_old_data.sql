@@ -1,0 +1,58 @@
+-- ============================================
+-- EXERCICE: Procédure simple (sans paramètres)
+-- NIVEAU: 🔴 Avancé - Procédures Stockées
+-- CONCEPTS: CREATE PROCEDURE, UPDATE, ROW_COUNT()
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/)
+-- - [Stored Procedures Overview](https://mariadb.com/kb/en/stored-procedures/)
+-- - [ROW_COUNT()](https://mariadb.com/kb/en/row_count/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer une procédure stockée basique qui effectue une opération
+-- et retourne le nombre de lignes affectées.
+--
+-- 💡 QU'EST-CE QU'UNE PROCÉDURE STOCKÉE ?
+-- Une procédure est un ensemble d'instructions SQL sauvegardées
+-- dans la base de données, qu'on peut appeler avec CALL.
+--
+-- Avantages:
+-- - Réutilisabilité du code
+-- - Performance (pré-compilée)
+-- - Logique métier centralisée
+-- - Sécurité (permissions granulaires)
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une procédure 'sp_cleanup_old_data' qui marque les jeux
+-- trop anciens sans beaucoup de notes comme "non notés".
+--
+-- Nom: sp_cleanup_old_data
+-- Paramètres: AUCUN
+--
+-- Action:
+-- Mettre metacritic à NULL pour les jeux qui répondent à:
+-- - year < 1990
+-- - ratings_count < 10
+--
+-- Retour:
+-- SELECT ROW_COUNT() AS rows_affected;
+-- (pour indiquer combien de lignes ont été modifiées)
+--
+-- 💡 SYNTAXE:
+-- DELIMITER //
+-- CREATE PROCEDURE nom_procedure()
+-- BEGIN
+--     -- Instructions SQL
+--     UPDATE ...
+--     SELECT ROW_COUNT() AS rows_affected;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- CALL sp_cleanup_old_data();
+--
+-- ⚠️ ATTENTION DELIMITER:
+-- DELIMITER // change le délimiteur pour pouvoir écrire des ;
+-- à l'intérieur de la procédure. N'oubliez pas de remettre DELIMITER ;
+-- ============================================

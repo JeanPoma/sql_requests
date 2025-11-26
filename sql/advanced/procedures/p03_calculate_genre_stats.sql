@@ -1,0 +1,68 @@
+-- ============================================
+-- EXERCICE: Procédure avec paramètres OUT
+-- NIVEAU: 🔴 Avancé - Procédures Stockées
+-- CONCEPTS: CREATE PROCEDURE, OUT parameters, SELECT INTO
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/)
+-- - [SELECT INTO](https://mariadb.com/kb/en/selectinto/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Utiliser des paramètres OUT pour retourner plusieurs valeurs
+-- calculées par la procédure.
+--
+-- 💡 PARAMÈTRES OUT:
+-- Les paramètres OUT permettent de retourner des valeurs depuis
+-- la procédure vers l'appelant.
+--
+-- Syntaxe: OUT nom_param TYPE
+-- Utilisation: SELECT valeur INTO nom_param
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une procédure 'sp_calculate_genre_stats' qui calcule des
+-- statistiques pour un genre donné.
+--
+-- Nom: sp_calculate_genre_stats
+-- Paramètres:
+-- - IN genre_name VARCHAR(100) : nom du genre à analyser
+-- - OUT total_games INT : nombre de jeux dans ce genre
+-- - OUT avg_score DECIMAL(5,2) : score Metacritic moyen
+-- - OUT top_game VARCHAR(255) : nom du meilleur jeu du genre
+--
+-- Action:
+-- Calculer les 3 statistiques et les assigner aux paramètres OUT
+--
+-- 💡 STRUCTURE:
+-- DELIMITER //
+-- CREATE PROCEDURE sp_calculate_genre_stats(
+--     IN genre_name VARCHAR(100),
+--     OUT total_games INT,
+--     OUT avg_score DECIMAL(5,2),
+--     OUT top_game VARCHAR(255)
+-- )
+-- BEGIN
+--     -- Calculer total_games et avg_score
+--     SELECT COUNT(*), ROUND(AVG(g.metacritic), 2)
+--     INTO total_games, avg_score
+--     FROM games g
+--     JOIN game_genres gg ON g.id = gg.game_id
+--     JOIN genres gr ON gg.genre_id = gr.id
+--     WHERE gr.name = genre_name AND g.metacritic IS NOT NULL;
+--     
+--     -- Calculer top_game
+--     SELECT g.name INTO top_game
+--     FROM games g
+--     JOIN game_genres gg ON g.id = gg.game_id
+--     JOIN genres gr ON gg.genre_id = gr.id
+--     WHERE gr.name = genre_name
+--     ORDER BY g.metacritic DESC
+--     LIMIT 1;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- CALL sp_calculate_genre_stats('Action', @total, @avg, @top);
+-- SELECT @total, @avg, @top;
+-- -- Affiche les 3 valeurs retournées
+-- ============================================

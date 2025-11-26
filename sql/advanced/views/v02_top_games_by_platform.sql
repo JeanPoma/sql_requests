@@ -1,0 +1,45 @@
+-- ============================================
+-- EXERCICE: Vue avec window functions (classement)
+-- NIVEAU: 🔴 Avancé - Vues
+-- CONCEPTS: CREATE VIEW, RANK(), PARTITION BY
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- - [Window Functions](https://mariadb.com/kb/en/window-functions/)
+-- - [RANK()](https://mariadb.com/kb/en/rank/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer une vue qui utilise des window functions pour
+-- calculer un classement partitionné (par plateforme).
+--
+-- 💡 POURQUOI UNE VUE AVEC WINDOW FUNCTIONS ?
+-- Les window functions dans une vue permettent de:
+-- - Précalculer des classements
+-- - Éviter de réécrire la logique de ranking
+-- - Faciliter les requêtes "TOP N par catégorie"
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une vue 'view_top_games_by_platform' qui classe les jeux par plateforme.
+--
+-- Colonnes de la vue:
+-- - platform (VARCHAR) : code de la plateforme
+-- - game_name (VARCHAR) : nom du jeu
+-- - year (INT) : année de sortie
+-- - metacritic (INT) : score Metacritic
+-- - platform_rank (INT) : rang du jeu dans sa plateforme (1=meilleur)
+--
+-- Jointures:
+-- games -> game_platforms -> platforms
+--
+-- Window function:
+-- - RANK() OVER (PARTITION BY platform ORDER BY metacritic DESC)
+--
+-- Filtres:
+-- - metacritic IS NOT NULL
+--
+-- 💡 ASTUCE UTILISATION:
+-- Après création, pour obtenir le TOP 10 de PC:
+-- SELECT * FROM view_top_games_by_platform 
+-- WHERE platform = 'PC' AND platform_rank <= 10;
+-- ============================================

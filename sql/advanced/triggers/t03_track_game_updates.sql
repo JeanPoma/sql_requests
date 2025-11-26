@@ -1,0 +1,95 @@
+-- ============================================
+-- EXERCICE: Trigger BEFORE UPDATE (historique)
+-- NIVEAU: 🔴 Avancé - Triggers
+-- CONCEPTS: BEFORE UPDATE, OLD vs NEW, historique
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
+-- - [Trigger OLD and NEW](https://mariadb.com/kb/en/trigger-overview/#old-and-new)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer un trigger qui conserve l'historique des modifications
+-- en enregistrant les anciennes valeurs avant UPDATE.
+--
+-- 💡 OLD vs NEW dans un UPDATE:
+-- - OLD : valeurs AVANT la modification
+-- - NEW : valeurs APRÈS la modification
+--
+-- On peut comparer OLD.colonne et NEW.colonne pour détecter
+-- les changements et agir en conséquence.
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une table d'historique 'games_history', puis un trigger
+-- 'trg_track_game_updates' qui enregistre les modifications.
+--
+-- Étape 1: Créer la table games_history
+-- CREATE TABLE IF NOT EXISTS games_history (
+--     history_id INT AUTO_INCREMENT PRIMARY KEY,
+--     game_id INT,
+--     old_name VARCHAR(255),
+--     new_name VARCHAR(255),
+--     old_metacritic INT,
+--     new_metacritic INT,
+--     changed_at DATETIME,
+--     INDEX idx_history_game (game_id),
+--     INDEX idx_history_time (changed_at)
+-- );
+--
+-- Étape 2: Créer le trigger
+-- Nom: trg_track_game_updates
+-- Table: games
+-- Moment: BEFORE UPDATE
+--
+-- Action:
+-- Insérer dans games_history uniquement si le nom OU le metacritic a changé
+-- avec:
+-- - game_id: NEW.id
+-- - old_name: OLD.name
+-- - new_name: NEW.name
+-- - old_metacritic: OLD.metacritic
+-- - new_metacritic: NEW.metacritic
+-- - changed_at: NOW()
+--
+-- 💡 SYNTAXE:
+-- DELIMITER //
+-- CREATE TRIGGER trg_track_game_updates
+-- BEFORE UPDATE ON games
+-- FOR EACH ROW
+-- BEGIN
+--     -- Enregistrer seulement si quelque chose a changé
+--     IF OLD.name != NEW.name OR
+--        OLD.metacritic != NEW.metacritic OR
+--        (OLD.metacritic IS NULL AND NEW.metacritic IS NOT NULL) OR
+--        (OLD.metacritic IS NOT NULL AND NEW.metacritic IS NULL)
+--     THEN
+--         INSERT INTO games_history (
+--             game_id, old_name, new_name,
+--             old_metacritic, new_metacritic, changed_at
+--         )
+--         VALUES (
+--             NEW.id, OLD.name, NEW.name,
+--             OLD.metacritic, NEW.metacritic, NOW()
+--         );
+--     END IF;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- -- Mettre à jour un jeu
+-- UPDATE games SET metacritic = 95 WHERE id = 123;
+--
+-- -- Vérifier l'historique
+-- SELECT * FROM games_history WHERE game_id = 123 ORDER BY changed_at DESC;
+--
+-- 💡 ATTENTION AUX NULL:
+-- Comparer NULL avec != ne fonctionne pas comme prévu.
+-- NULL != NULL retourne NULL (ni TRUE ni FALSE).
+-- Il faut tester explicitement IS NULL / IS NOT NULL.
+--
+-- 💡 CAS D'USAGE:
+-- - Audit trail complet (qui a changé quoi et quand)
+-- - Rollback manuel (restaurer une ancienne valeur)
+-- - Analyse des tendances (évolution des scores dans le temps)
+-- ============================================
+

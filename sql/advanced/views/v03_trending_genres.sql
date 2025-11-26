@@ -1,0 +1,51 @@
+-- ============================================
+-- EXERCICE: Vue empilée (utiliser une vue dans une autre)
+-- NIVEAU: 🔴 Avancé - Vues
+-- CONCEPTS: Composition de vues, réutilisabilité
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- - [View Algorithms](https://mariadb.com/kb/en/view-algorithms/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Comprendre qu'on peut créer des vues basées sur d'autres vues
+-- pour construire une hiérarchie d'abstractions.
+--
+-- 💡 COMPOSITION DE VUES:
+-- Comme des fonctions en programmation, les vues peuvent s'appuyer
+-- sur d'autres vues pour créer des niveaux d'abstraction.
+--
+-- Avantages:
+-- - Réutiliser la logique de view_genre_stats
+-- - Créer des filtres métier spécifiques
+-- - Maintenir la logique de base en un seul endroit
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une vue 'view_trending_genres' qui filtre la vue 'view_genre_stats'
+-- pour ne garder que les genres "tendance" (récents et de qualité).
+--
+-- Prérequis: La vue view_genre_stats doit exister (exercice v01)
+--
+-- Colonnes de la vue:
+-- - genre (VARCHAR)
+-- - total_games (INT)
+-- - avg_score (DECIMAL)
+--
+-- Critères de sélection (genres "tendance"):
+-- - last_year >= 2015 (au moins un jeu récent)
+-- - avg_score >= 75 (bonne qualité moyenne)
+--
+-- Tri: par total_games DESC, puis avg_score DESC
+--
+-- 💡 SYNTAXE:
+-- CREATE VIEW view_trending_genres AS
+-- SELECT colonne1, colonne2, ...
+-- FROM view_genre_stats
+-- WHERE conditions
+-- ORDER BY ...;
+--
+-- 💡 UTILISATION:
+-- SELECT * FROM view_trending_genres;
+-- -- Retourne uniquement les genres populaires et récents
+-- ============================================

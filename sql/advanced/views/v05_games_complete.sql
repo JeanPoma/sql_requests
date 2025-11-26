@@ -1,0 +1,61 @@
+-- ============================================
+-- EXERCICE: Vue dénormalisée (simplifier les jointures)
+-- NIVEAU: 🔴 Avancé - Vues
+-- CONCEPTS: CREATE VIEW, jointures multiples, dénormalisation
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- - [GROUP_CONCAT](https://mariadb.com/kb/en/group_concat/)
+-- - [LEFT JOIN](https://mariadb.com/kb/en/join-syntax/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer une vue "complète" qui rassemble toutes les informations
+-- d'un jeu en une seule ligne, facilitant les requêtes futures.
+--
+-- 💡 VUE DÉNORMALISÉE:
+-- Au lieu de faire 5 jointures à chaque fois, on crée une vue
+-- qui fait le travail une fois pour toutes.
+--
+-- Avantages:
+-- - Simplifie drastiquement les requêtes utilisateur
+-- - Abstrait la complexité du schéma normalisé
+-- - Code plus lisible et maintenable
+--
+-- Inconvénient:
+-- - Peut être lente sur de gros volumes (pas de cache)
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une vue 'view_games_complete' qui rassemble toutes les métadonnées
+-- d'un jeu en une seule ligne.
+--
+-- Colonnes de la vue:
+-- - id (INT)
+-- - name (VARCHAR)
+-- - year (INT)
+-- - metacritic (INT)
+-- - rating (DECIMAL)
+-- - platforms (TEXT) : codes plateformes séparés par ', '
+-- - genres (TEXT) : genres séparés par ', '
+-- - publishers (TEXT) : éditeurs séparés par ', '
+-- - developers (TEXT) : développeurs séparés par ', '
+--
+-- Jointures (toutes LEFT JOIN car optionnelles):
+-- games 
+--   LEFT JOIN game_platforms -> platforms
+--   LEFT JOIN game_genres -> genres
+--   LEFT JOIN game_publishers -> publishers
+--   LEFT JOIN game_developers -> developers
+--
+-- Agrégations (GROUP_CONCAT avec DISTINCT pour éviter les doublons):
+-- - platforms: GROUP_CONCAT(DISTINCT platforms.code ORDER BY platforms.code SEPARATOR ', ')
+-- - genres: GROUP_CONCAT(DISTINCT genres.name ORDER BY genres.name SEPARATOR ', ')
+-- - publishers: GROUP_CONCAT(DISTINCT publishers.name ORDER BY publishers.name SEPARATOR ', ')
+-- - developers: GROUP_CONCAT(DISTINCT developers.name ORDER BY developers.name SEPARATOR ', ')
+--
+-- GROUP BY: games.id (et colonnes non-agrégées)
+--
+-- 💡 UTILISATION:
+-- -- Au lieu de 5 jointures:
+-- SELECT * FROM view_games_complete WHERE name LIKE '%Witcher%';
+-- ============================================
