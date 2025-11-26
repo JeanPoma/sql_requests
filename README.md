@@ -10,6 +10,7 @@ Ce projet propose une progression TDD pour apprendre SQL avec des **données ré
 - [⚙️ Installation](#️-installation)
 - [🚀 Utilisation](#-utilisation)
 - [🎮 Explorer la base avec Adminer](#-explorer-la-base-avec-adminer)
+- [📊 Suivre votre progression](#-suivre-votre-progression)
 - [💡 Conseils pédagogiques](#-conseils-pédagogiques)
 - [🔧 Dépannage](#-dépannage)
 - [📄 Licence & Données](#-licence--données)
@@ -235,6 +236,76 @@ LIMIT 10;
 - **Schéma** : Voyez les relations entre tables
 
 💡 **Astuce** : Testez d'abord vos requêtes dans Adminer avant de les mettre dans les fichiers `.sql` !
+
+
+## 📊 Suivre votre progression
+
+### Vérifier rapidement vos tests
+
+Pour voir l'état de tous vos exercices d'un coup d'œil :
+
+```bash
+# Tous les tests avec résumé
+docker exec -it vg-app pytest --tb=no -q
+
+# Tests avec barre de progression
+docker exec -it vg-app pytest --tb=line
+
+# Uniquement les exercices débutants
+docker exec -it vg-app pytest tests/test_00*.py -v
+
+# Uniquement les exercices intermédiaires
+docker exec -it vg-app pytest tests/test_0[1-9]*.py tests/test_10*.py -v
+
+# Uniquement les exercices avancés
+docker exec -it vg-app pytest tests/test_1[1-9]*.py tests/test_20*.py -v
+```
+
+### Script de visualisation de progression
+
+Un script Python est disponible pour visualiser votre progression de manière plus agréable :
+
+```bash
+# Afficher votre progression avec des barres colorées
+docker exec -it vg-app python scripts/show_progress.py
+```
+
+Ce script affiche :
+- ✅ Nombre d'exercices complétés par niveau
+- 📊 Barre de progression visuelle
+- 🎯 Prochains exercices recommandés
+- 🏆 Badges de compétences débloqués
+
+### Badges de compétences
+
+Au fur et à mesure de votre progression, vous débloquerez des badges :
+
+| Badge | Condition | Compétences |
+|-------|-----------|-------------|
+| 🌱 **Bases SQL** | 8/8 exercices débutants | SELECT, WHERE, ORDER BY, LIMIT |
+| 🔢 **Agrégation** | q00g, q00h, q03, q04 | COUNT, AVG, GROUP BY, HAVING |
+| 🔗 **Jointures** | q03, q04, q08, q09 | INNER JOIN, LEFT JOIN, many-to-many |
+| 🪟 **Window Functions** | q05, q06, q07 | RANK, PARTITION BY, OVER |
+| 📝 **CTEs** | q05, q10 | WITH clause, sous-requêtes nommées |
+| ⚡ **Optimisation** | q16, q17 | EXPLAIN, index, performance |
+| 🎓 **Maître SQL** | Tous les exercices | Toutes les compétences ! |
+
+### Consulter le parcours détaillé
+
+Pour une vue d'ensemble de tous les exercices et leur cartographie avec SQLZoo :
+
+```bash
+cat PARCOURS.md
+```
+
+Ce fichier contient :
+- 🗺️ Cartographie complète des exercices
+- 🔗 Liens directs vers les tutoriels SQLZoo
+- 📋 Parcours recommandés selon vos objectifs
+- 💡 Conseils de progression
+
+---
+
 
 ---
 
