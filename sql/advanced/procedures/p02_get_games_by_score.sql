@@ -1,0 +1,55 @@
+-- ============================================
+-- EXERCICE: Procédure avec paramètre IN
+-- NIVEAU: 🔴 Avancé - Procédures Stockées
+-- CONCEPTS: CREATE PROCEDURE, IN parameters, dynamic queries
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/)
+-- - [Procedure Parameters](https://mariadb.com/kb/en/create-procedure/#parameters)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à créer une procédure avec des paramètres d'entrée (IN)
+-- pour rendre le code réutilisable avec différentes valeurs.
+--
+-- 💡 PARAMÈTRES IN:
+-- Les paramètres IN permettent de passer des valeurs à la procédure.
+-- Syntaxe: IN nom_param TYPE
+--
+-- Exemple: IN min_score INT
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une procédure 'sp_get_games_by_score' qui recherche des jeux
+-- selon un score minimum fourni en paramètre.
+--
+-- Nom: sp_get_games_by_score
+-- Paramètres:
+-- - IN min_score INT : score minimum Metacritic
+--
+-- Action:
+-- Retourner les 20 meilleurs jeux avec metacritic >= min_score
+--
+-- Colonnes à retourner: name, year, metacritic
+-- Ordre: metacritic DESC
+-- Limite: 20
+--
+-- 💡 SYNTAXE:
+-- DELIMITER //
+-- CREATE PROCEDURE sp_get_games_by_score(IN min_score INT)
+-- BEGIN
+--     SELECT name, year, metacritic
+--     FROM games
+--     WHERE metacritic >= min_score
+--     ORDER BY metacritic DESC
+--     LIMIT 20;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- CALL sp_get_games_by_score(90);  -- Jeux avec score >= 90
+-- CALL sp_get_games_by_score(80);  -- Jeux avec score >= 80
+--
+-- 💡 POURQUOI C'EST UTILE ?
+-- Au lieu de réécrire la requête à chaque fois, on appelle
+-- simplement la procédure avec le paramètre souhaité.
+-- ============================================

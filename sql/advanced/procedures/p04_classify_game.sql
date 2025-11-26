@@ -1,0 +1,80 @@
+-- ============================================
+-- EXERCICE: Procédure avec logique conditionnelle
+-- NIVEAU: 🔴 Avancé - Procédures Stockées
+-- CONCEPTS: IF/ELSEIF/ELSE, DECLARE, variables locales
+--
+-- 📚 Documentation MariaDB :
+-- - [IF Statement](https://mariadb.com/kb/en/if/)
+-- - [DECLARE](https://mariadb.com/kb/en/declare-variable/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Utiliser des structures conditionnelles (IF/ELSEIF/ELSE)
+-- et des variables locales dans une procédure.
+--
+-- 💡 VARIABLES LOCALES:
+-- DECLARE nom_variable TYPE;
+-- SET nom_variable = valeur;
+-- SELECT colonne INTO nom_variable FROM ...;
+--
+-- 💡 STRUCTURE IF:
+-- IF condition THEN
+--     instructions
+-- ELSEIF condition THEN
+--     instructions
+-- ELSE
+--     instructions
+-- END IF;
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une procédure 'sp_classify_game' qui classifie un jeu
+-- selon son score Metacritic.
+--
+-- Nom: sp_classify_game
+-- Paramètres:
+-- - IN game_id INT : ID du jeu à classifier
+-- - OUT classification VARCHAR(50) : classification du jeu
+--
+-- Classifications:
+-- - NULL → 'Non noté'
+-- - >= 90 → 'Chef-d\'œuvre'
+-- - >= 80 → 'Excellent'
+-- - >= 70 → 'Bon'
+-- - >= 60 → 'Moyen'
+-- - < 60 → 'Faible'
+--
+-- 💡 STRUCTURE:
+-- DELIMITER //
+-- CREATE PROCEDURE sp_classify_game(
+--     IN game_id INT,
+--     OUT classification VARCHAR(50)
+-- )
+-- BEGIN
+--     DECLARE score INT;
+--     
+--     -- Récupérer le score
+--     SELECT metacritic INTO score 
+--     FROM games 
+--     WHERE id = game_id;
+--     
+--     -- Classifier
+--     IF score IS NULL THEN
+--         SET classification = 'Non noté';
+--     ELSEIF score >= 90 THEN
+--         SET classification = 'Chef-d\'œuvre';
+--     ELSEIF score >= 80 THEN
+--         SET classification = 'Excellent';
+--     ELSEIF score >= 70 THEN
+--         SET classification = 'Bon';
+--     ELSEIF score >= 60 THEN
+--         SET classification = 'Moyen';
+--     ELSE
+--         SET classification = 'Faible';
+--     END IF;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- CALL sp_classify_game(123, @class);
+-- SELECT @class;
+-- ============================================

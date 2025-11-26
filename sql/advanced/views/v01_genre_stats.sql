@@ -1,0 +1,52 @@
+-- ============================================
+-- EXERCICE: Vue simple (agrégation par genre)
+-- NIVEAU: 🔴 Avancé - Vues
+-- CONCEPTS: CREATE VIEW, agrégations, jointures
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- - [Views Overview](https://mariadb.com/kb/en/views/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à créer une vue qui encapsule une requête complexe
+-- pour la réutiliser facilement dans d'autres requêtes.
+--
+-- 💡 QU'EST-CE QU'UNE VUE ?
+-- Une vue est une "table virtuelle" basée sur le résultat d'une requête SELECT.
+-- Elle ne stocke pas les données, mais la définition de la requête.
+--
+-- Avantages:
+-- - Simplification des requêtes complexes
+-- - Réutilisabilité
+-- - Abstraction de la complexité
+-- - Sécurité (masquer certaines colonnes)
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une vue nommée 'view_genre_stats' qui agrège les statistiques par genre.
+--
+-- Colonnes de la vue:
+-- - genre (VARCHAR) : nom du genre
+-- - total_games (INT) : nombre de jeux dans ce genre
+-- - avg_score (DECIMAL) : score Metacritic moyen arrondi à 2 décimales
+-- - first_year (INT) : année du premier jeu
+-- - last_year (INT) : année du dernier jeu
+--
+-- Jointures nécessaires:
+-- games -> game_genres -> genres
+--
+-- Filtres:
+-- - Uniquement les jeux avec metacritic NOT NULL
+--
+-- Groupement: par genre (genres.name)
+--
+-- 💡 SYNTAXE:
+-- CREATE VIEW nom_vue AS
+-- SELECT colonnes
+-- FROM tables
+-- WHERE conditions
+-- GROUP BY colonnes;
+--
+-- 💡 ASTUCE:
+-- Après création, vous pourrez faire: SELECT * FROM view_genre_stats;
+-- ============================================

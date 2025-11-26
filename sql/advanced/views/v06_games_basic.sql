@@ -1,0 +1,54 @@
+-- ============================================
+-- EXERCICE: Vue updatable (modifiable)
+-- NIVEAU: 🔴 Avancé - Vues
+-- CONCEPTS: Vues updatables, limitations
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- - [Updatable Views](https://mariadb.com/kb/en/inserting-and-updating-with-views/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Comprendre quelles vues sont modifiables (updatable) et lesquelles ne le sont pas.
+--
+-- 💡 VUE UPDATABLE:
+-- Une vue est updatable (on peut faire UPDATE/INSERT/DELETE dessus) SI:
+-- ✅ Elle référence une seule table
+-- ✅ Pas de DISTINCT
+-- ✅ Pas de GROUP BY / HAVING
+-- ✅ Pas de UNION
+-- ✅ Pas de sous-requête dans SELECT
+-- ✅ Pas de fonction d'agrégation
+--
+-- Si ces conditions sont remplies, UPDATE/INSERT/DELETE sur la vue
+-- modifient directement la table sous-jacente.
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une vue 'view_games_basic' qui est updatable.
+--
+-- Colonnes de la vue:
+-- - id (INT)
+-- - name (VARCHAR)
+-- - year (INT)
+-- - metacritic (INT)
+-- - ratings_count (INT)
+--
+-- Table source: games (une seule table, pas de jointure)
+--
+-- Filtre:
+-- - year IS NOT NULL (pour n'exposer que les jeux avec année connue)
+--
+-- 💡 CETTE VUE EST UPDATABLE:
+-- Après création, on peut faire:
+-- UPDATE view_games_basic SET metacritic = 95 WHERE id = 123;
+-- -- Cela modifiera directement la table games
+--
+-- 💡 COMPARAISON:
+-- view_games_basic -> UPDATABLE (1 table, pas d'agrégat)
+-- view_genre_stats -> NON UPDATABLE (GROUP BY)
+-- view_games_complete -> NON UPDATABLE (plusieurs tables + GROUP_CONCAT)
+--
+-- ⚠️ ATTENTION:
+-- Le filtre WHERE year IS NOT NULL signifie qu'on ne peut pas
+-- UPDATE pour mettre year à NULL via cette vue.
+-- ============================================
