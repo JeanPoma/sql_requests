@@ -1,12 +1,12 @@
 -- ============================================
 -- EXERCICE: Procédure simple (sans paramètres)
 -- NIVEAU: 🔴 Avancé - Procédures Stockées
--- CONCEPTS: CREATE PROCEDURE, UPDATE, ROW_COUNT()
+-- CONCEPTS: CREATE PROCEDURE, UPDATE, GET DIAGNOSTICS
 --
--- 📚 Documentation MariaDB :
--- - [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/)
--- - [Stored Procedures Overview](https://mariadb.com/kb/en/stored-procedures/)
--- - [ROW_COUNT()](https://mariadb.com/kb/en/row_count/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE PROCEDURE](https://www.postgresql.org/docs/current/sql-createprocedure.html)
+-- - [PL/pgSQL Procedures](https://www.postgresql.org/docs/current/plpgsql-structure.html)
+-- - [GET DIAGNOSTICS](https://www.postgresql.org/docs/current/plpgsql-statements.html#PLPGSQL-STATEMENTS-DIAGNOSTICS)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Créer une procédure stockée basique qui effectue une opération
@@ -18,7 +18,7 @@
 --
 -- Avantages:
 -- - Réutilisabilité du code
--- - Performance (pré-compilée)
+-- - Performance (compilée)
 -- - Logique métier centralisée
 -- - Sécurité (permissions granulaires)
 --
@@ -36,23 +36,49 @@
 -- - ratings_count < 10
 --
 -- Retour:
--- SELECT ROW_COUNT() AS rows_affected;
--- (pour indiquer combien de lignes ont été modifiées)
+-- RAISE NOTICE pour afficher le nombre de lignes modifiées
+-- (PostgreSQL n'a pas de SELECT direct dans les procédures,
+--  on utilise RAISE NOTICE ou un paramètre OUT)
 --
--- 💡 SYNTAXE:
--- DELIMITER //
--- CREATE PROCEDURE nom_procedure()
+-- 💡 SYNTAXE POSTGRESQL (PL/pgSQL):
+-- CREATE OR REPLACE PROCEDURE nom_procedure()
+-- LANGUAGE plpgsql
+-- AS $$
+-- DECLARE
+--     rows_affected INT;
 -- BEGIN
 --     -- Instructions SQL
 --     UPDATE ...
---     SELECT ROW_COUNT() AS rows_affected;
--- END //
--- DELIMITER ;
+--
+--     -- Récupérer le nombre de lignes modifiées
+--     GET DIAGNOSTICS rows_affected = ROW_COUNT;
+--
+--     -- Afficher le résultat
+--     RAISE NOTICE 'Rows affected: %', rows_affected;
+-- END;
+-- $$;
 --
 -- 💡 UTILISATION:
 -- CALL sp_cleanup_old_data();
 --
--- ⚠️ ATTENTION DELIMITER:
--- DELIMITER // change le délimiteur pour pouvoir écrire des ;
--- à l'intérieur de la procédure. N'oubliez pas de remettre DELIMITER ;
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. Pas de DELIMITER // (utilise $$ à la place)
+-- 2. LANGUAGE plpgsql obligatoire
+-- 3. GET DIAGNOSTICS au lieu de ROW_COUNT()
+-- 4. DECLARE avant BEGIN
+-- 5. RAISE NOTICE au lieu de SELECT pour afficher
+--
+-- 💡 ALTERNATIVE avec OUT parameter:
+-- CREATE OR REPLACE PROCEDURE sp_cleanup_old_data(OUT rows_affected INT)
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     UPDATE games
+--     SET metacritic = NULL
+--     WHERE year < 1990 AND ratings_count < 10;
+--
+--     GET DIAGNOSTICS rows_affected = ROW_COUNT;
+-- END;
+-- $$;
 -- ============================================
+
