@@ -1,0 +1,38 @@
+-- ============================================
+-- EXERCICE: Filtrer avec WHERE et conditions multiples (AND/OR)
+-- NIVEAU: 🟢 Débutant
+-- CONCEPTS: WHERE avec AND, OR
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 1 : https://sqlzoo.net/wiki/SELECT_names
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à combiner plusieurs conditions avec AND et OR.
+-- - AND : les deux conditions doivent être vraies
+-- - OR : au moins une des conditions doit être vraie
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- WHERE condition1 AND condition2
+-- WHERE condition1 OR condition2
+-- WHERE (condition1 OR condition2) AND condition3
+--
+-- Exemples:
+-- WHERE year = 2020 AND metacritic > 80
+-- WHERE year = 2019 OR year = 2020
+--
+-- ============================================
+-- CONSIGNE:
+-- Sélectionnez les jeux qui satisfont TOUTES ces conditions:
+-- - Sortis en 2019 OU 2020 OU 2021
+-- - ET avec un score Metacritic supérieur ou égal à 85
+--
+-- Colonnes à retourner: name, year, metacritic, ratings_count
+-- Ordre: metacritic DESC, puis ratings_count DESC
+-- Limiter à 20 résultats
+--
+-- 💡 ASTUCE: Utilisez des parenthèses pour grouper les OR
+-- WHERE (year = 2019 OR year = 2020 OR year = 2021) AND metacritic >= 85
+--
+-- ALTERNATIVE: vous pouvez aussi utiliser IN:
+-- WHERE year IN (2019, 2020, 2021) AND metacritic >= 85
+-- ============================================

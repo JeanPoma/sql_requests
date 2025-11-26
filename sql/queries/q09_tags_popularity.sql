@@ -1,6 +1,48 @@
--- CONSIGNE: Compter le nombre de jeux par tag, et donner le Metacritic moyen.
--- Colonnes: tag, n_games, meta_avg
--- Filtres: optionnel tag NOT NULL; metacritic facultatif pour la moyenne
--- Having: n_games >= 50
+-- ============================================
+-- EXERCICE: Popularité et qualité des tags
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: Jointures multiples, GROUP BY, HAVING, agrégats
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 5 : https://sqlzoo.net/wiki/SUM_and_COUNT
+-- - Tutorial 6 : https://sqlzoo.net/wiki/The_JOIN_operation
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Analyser la distribution des tags (mots-clés) dans le dataset
+-- et identifier les tags les plus populaires et/ou de meilleure qualité.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT tag, COUNT(*) AS n_games, AVG(metacritic) AS meta_avg
+-- FROM ... JOIN ...
+-- GROUP BY tag
+-- HAVING n_games >= seuil;
+--
+-- ============================================
+-- CONSIGNE:
+-- Comptez le nombre de jeux par tag, et calculez le Metacritic moyen.
+--
+-- Colonnes attendues: tag, n_games, meta_avg
+--
+-- Jointures: games -> game_tags -> tags
+--
+-- Agrégation:
+-- - COUNT(*) AS n_games : nombre de jeux avec ce tag
+-- - AVG(metacritic) AS meta_avg : score moyen (peut être NULL si aucun score)
+--
+-- Filtres optionnels:
+-- - tag IS NOT NULL (selon votre jointure)
+-- - Pour la moyenne, les jeux sans metacritic sont automatiquement exclus par AVG()
+--
+-- Having: n_games >= 50 (tags populaires uniquement)
 -- Ordre: n_games DESC, meta_avg DESC
 -- Limit: 100
+--
+-- 💡 QUESTIONS À SE POSER:
+-- - Quels sont les tags les plus fréquents ? (Multiplayer, Singleplayer, Action...)
+-- - Y a-t-il des tags "de qualité" (peu de jeux mais scores élevés) ?
+-- - Les tags populaires ont-ils de bons scores en moyenne ?
+--
+-- 💡 ASTUCE:
+-- Utilisez LEFT JOIN si vous voulez garder tous les tags,
+-- ou INNER JOIN pour ne garder que les tags avec au moins un jeu.
+-- ============================================

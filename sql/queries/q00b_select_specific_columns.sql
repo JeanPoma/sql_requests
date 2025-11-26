@@ -1,0 +1,27 @@
+-- ============================================
+-- EXERCICE: Sélectionner des colonnes spécifiques
+-- NIVEAU: 🟢 Débutant
+-- CONCEPTS: SELECT (colonnes spécifiques)
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 0 : https://sqlzoo.net/wiki/SELECT_basics
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à sélectionner uniquement les colonnes qui nous intéressent
+-- plutôt que toutes les colonnes avec *.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT colonne1, colonne2, colonne3 FROM nom_table LIMIT nombre;
+--
+-- ============================================
+-- CONSIGNE:
+-- Sélectionnez uniquement les colonnes suivantes de la table 'games':
+-- - name (nom du jeu)
+-- - year (année de sortie)
+-- - metacritic (score Metacritic)
+--
+-- Limitez les résultats aux 20 premières lignes.
+--
+-- Colonnes attendues: name, year, metacritic (dans cet ordre)
+-- Nombre de lignes: 20
+-- ============================================

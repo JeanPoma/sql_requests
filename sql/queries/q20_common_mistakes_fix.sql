@@ -1,6 +1,52 @@
--- CONSIGNE: Exercice de correction.
--- Un analyste a écrit une requête avec une mauvaise jointure (ex: genres mal reliés) et un GROUP BY incomplet.
--- Réécrire la requête correcte: 
---   But: par genre, nombre de jeux et metacritic moyen (g.metacritic), year NOT NULL.
--- Colonnes: genre, n_games, meta_avg
+-- ============================================
+-- EXERCICE: Correction d'erreurs SQL courantes
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: Debugging, jointures correctes, GROUP BY complet
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Identifier et corriger des erreurs SQL typiques:
+-- - Mauvaises jointures (clés étrangères incorrectes)
+-- - GROUP BY incomplet (colonnes manquantes)
+-- - Agrégats mal utilisés
+--
+-- ============================================
+-- CONSIGNE:
+-- Un analyste a écrit une requête avec des erreurs:
+-- - Jointure incorrecte (genres mal reliés)
+-- - GROUP BY incomplet
+--
+-- Réécrivez la requête CORRECTE:
+--
+-- But: Par genre, calculer le nombre de jeux et le metacritic moyen,
+-- uniquement pour les jeux avec year NOT NULL.
+--
+-- Colonnes attendues: genre, n_games, meta_avg
 -- Ordre: n_games DESC
+-- Limit: 20
+--
+-- 💡 ERREURS COURANTES À ÉVITER:
+-- ❌ FROM games JOIN genres ON games.id = genres.id  (FAUX!)
+--    Les tables games et genres ne sont pas directement liées
+--
+-- ✅ FROM games
+--    JOIN game_genres ON games.id = game_genres.game_id
+--    JOIN genres ON game_genres.genre_id = genres.id  (CORRECT!)
+--
+-- ❌ GROUP BY genre  (si genre n'est pas dans la table agrégée)
+-- ✅ GROUP BY genres.name  (ou genres.id)
+--
+-- ❌ SELECT genre, metacritic  (sans agrégat ni GROUP BY)
+-- ✅ SELECT genre, AVG(metacritic)  (avec agrégat)
+--
+-- 💡 STRUCTURE CORRECTE:
+-- SELECT gr.name AS genre,
+--        COUNT(*) AS n_games,
+--        ROUND(AVG(g.metacritic), 2) AS meta_avg
+-- FROM games g
+-- JOIN game_genres gg ON g.id = gg.game_id
+-- JOIN genres gr ON gg.genre_id = gr.id
+-- WHERE g.year IS NOT NULL
+-- GROUP BY gr.name
+-- ORDER BY n_games DESC
+-- LIMIT 20;
+-- ============================================

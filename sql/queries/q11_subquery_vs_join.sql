@@ -1,5 +1,32 @@
--- CONSIGNE: Produire la même sortie par deux approches:
+-- ============================================
+-- EXERCICE: Sous-requête vs JOIN (comparaison d'approches)
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: Sous-requêtes corrélées, GROUP BY, JOIN, optimisation
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Comprendre la différence entre sous-requêtes et jointures,
+-- et quand utiliser l'une ou l'autre approche.
+--
+-- ============================================
+-- CONSIGNE:
+-- Produisez la même sortie par deux approches différentes:
 --   (A) Sous-requête corrélée pour récupérer le Metacritic max par développeur
 --   (B) Équivalent avec GROUP BY + JOIN
+--
 -- Colonnes attendues: developer, max_meta
--- Note: Vous pouvez n’implémenter que la (B) dans ce fichier (la (A) sera vérifiée dans le test).
+--
+-- Note: Implémentez l'approche (B) dans ce fichier (GROUP BY + JOIN).
+-- L'approche (A) sera testée séparément pour comparaison.
+--
+-- 💡 APPROCHE B (GROUP BY + JOIN):
+-- 1. Créer une sous-requête ou CTE qui groupe par developer
+-- 2. Calculer MAX(metacritic) par developer
+-- 3. Joindre avec la table developers pour avoir les noms
+--
+-- Ordre: max_meta DESC
+-- Limit: 50
+--
+-- 💡 POURQUOI COMPARER ?
+-- - Sous-requêtes corrélées: plus lentes, exécutées pour chaque ligne
+-- - GROUP BY + JOIN: plus efficaces, un seul scan
+-- ============================================

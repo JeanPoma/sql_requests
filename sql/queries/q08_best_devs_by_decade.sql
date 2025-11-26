@@ -1,5 +1,63 @@
--- CONSIGNE: Calculer, par décennie (ex: 1990, 2000, 2010), les 3 meilleurs studios (developers) par Metacritic moyen.
--- Colonnes: decade, developer, meta_avg, n_games
--- Dériver decade depuis year (ex: FLOOR(year/10)*10)
--- Filtres: year NOT NULL, metacritic NOT NULL, n_games >= 5
--- Ordre: decade ASC, meta_avg DESC
+-- ============================================
+-- EXERCICE: Meilleurs développeurs par décennie
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: Calculs de dates, GROUP BY, jointures, window functions
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 5 : https://sqlzoo.net/wiki/SUM_and_COUNT
+-- - Tutorial 8+ : https://sqlzoo.net/wiki/Window_functions
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à créer des groupements temporels (décennies)
+-- et à extraire le TOP N par groupe avec window functions.
+--
+-- 💡 RAPPEL: Calculer une décennie
+-- FLOOR(year / 10) * 10
+-- Exemples:
+-- - 1998 → FLOOR(1998/10)*10 = 199*10 = 1990
+-- - 2015 → FLOOR(2015/10)*10 = 201*10 = 2010
+--
+-- ============================================
+-- CONSIGNE:
+-- Calculez, par décennie, les 3 meilleurs studios (developers)
+-- par Metacritic moyen.
+--
+-- Colonnes attendues: decade, developer, meta_avg, n_games
+--
+-- Étapes:
+-- 1. Dériver la décennie depuis year: FLOOR(year/10)*10 AS decade
+-- 2. Joindre games -> game_developers -> developers
+-- 3. Grouper par (decade, developer)
+-- 4. Calculer AVG(metacritic) et COUNT(*) par groupe
+-- 5. Utiliser une window function pour classer par décennie
+-- 6. Filtrer pour garder uniquement le TOP 3 par décennie
+--
+-- Filtres:
+-- - year IS NOT NULL
+-- - metacritic IS NOT NULL
+-- - n_games >= 5 (développeurs productifs uniquement)
+--
+-- Ordre final: decade ASC, meta_avg DESC
+--
+-- 💡 APPROCHE AVEC CTE:
+-- WITH dev_stats AS (
+--   SELECT FLOOR(year/10)*10 AS decade,
+--          developer,
+--          AVG(metacritic) AS meta_avg,
+--          COUNT(*) AS n_games
+--   FROM ... JOIN ...
+--   GROUP BY decade, developer
+--   HAVING n_games >= 5
+-- ),
+-- ranked AS (
+--   SELECT *,
+--          RANK() OVER (PARTITION BY decade ORDER BY meta_avg DESC) AS rnk
+--   FROM dev_stats
+-- )
+-- SELECT decade, developer, meta_avg, n_games
+-- FROM ranked
+-- WHERE rnk <= 3;
+--
+-- 💡 QUESTION À EXPLORER:
+-- Les grands studios des années 2000 sont-ils toujours au top en 2010-2020 ?
+-- ============================================

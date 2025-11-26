@@ -1,4 +1,31 @@
--- CONSIGNE: Comparer deux familles de plateformes (ex: 'PC' vs 'PlayStation 4')
---   via UNION ALL de 2 sélections homogènes.
+-- ============================================
+-- EXERCICE: Comparer des plateformes avec UNION ALL
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: UNION ALL, agrégations comparatives
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à combiner plusieurs datasets avec UNION ALL
+-- pour créer des comparaisons côte à côte.
+--
+-- 💡 RAPPEL UNION vs UNION ALL:
+-- - UNION: élimine les doublons (plus lent)
+-- - UNION ALL: garde tous les résultats (plus rapide)
+--
+-- ============================================
+-- CONSIGNE:
+-- Comparez deux familles de plateformes (ex: 'PC' vs 'PlayStation 4')
+-- via UNION ALL de 2 sélections homogènes.
+--
 -- Colonnes: platform_group, meta_avg, n_games
--- Paramètres: utilisez un IN ('PC') et un IN ('PlayStation 4') dans deux branches UNION ALL
+--
+-- Structure:
+-- SELECT 'PC' AS platform_group, AVG(metacritic) AS meta_avg, COUNT(*) AS n_games
+-- FROM ... WHERE platform IN ('PC')
+-- UNION ALL
+-- SELECT 'PlayStation 4' AS platform_group, AVG(metacritic) AS meta_avg, COUNT(*) AS n_games
+-- FROM ... WHERE platform IN ('PlayStation 4')
+--
+-- 💡 POURQUOI UNION ALL ?
+-- Permet de créer des rapports comparatifs en empilant des résultats
+-- de requêtes similaires avec des critères différents.
+-- ============================================

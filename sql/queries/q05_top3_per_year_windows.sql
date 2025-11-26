@@ -1,5 +1,54 @@
--- CONSIGNE: Pour chaque année, retourner le TOP 3 des jeux par Metacritic.
--- Utiliser une fonction de fenêtre (DENSE_RANK ou RANK) partitionnée par year, ordonnée par metacritic DESC puis ratings_count DESC.
--- Colonnes: year, name, metacritic, rnk
--- Filtres: year NOT NULL, metacritic NOT NULL; garder rnk <= 3
+-- ============================================
+-- EXERCICE: TOP 3 des jeux par année (Window Functions)
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: Window Functions, RANK/DENSE_RANK, PARTITION BY
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 8+ : https://sqlzoo.net/wiki/Window_functions
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Introduction aux fonctions de fenêtre (window functions) pour calculer
+-- des rangs à l'intérieur de groupes (ici: par année).
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT colonnes,
+--        DENSE_RANK() OVER (PARTITION BY groupe ORDER BY critere DESC) AS rnk
+-- FROM table
+-- WHERE filtres
+--
+-- DIFFÉRENCE RANK vs DENSE_RANK:
+-- - RANK: 1, 2, 2, 4 (saute le rang 3 en cas d'ex-aequo)
+-- - DENSE_RANK: 1, 2, 2, 3 (ne saute jamais de rang)
+--
+-- ============================================
+-- CONSIGNE:
+-- Pour chaque année, retournez le TOP 3 des jeux par Metacritic.
+--
+-- Utiliser une fonction de fenêtre (DENSE_RANK ou RANK):
+-- - Partitionnée par year (chaque année a son propre classement)
+-- - Ordonnée par metacritic DESC, puis ratings_count DESC
+--
+-- Colonnes attendues: year, name, metacritic, rnk
+--
+-- Filtres:
+-- - year IS NOT NULL
+-- - metacritic IS NOT NULL
+-- - Garder uniquement rnk <= 3 (TOP 3)
+--
 -- Ordre final: year DESC, rnk ASC
+--
+-- 💡 ASTUCE:
+-- Vous devrez utiliser une sous-requête ou une CTE car on ne peut pas
+-- filtrer directement sur le résultat d'une window function dans WHERE.
+--
+-- Exemple de structure:
+-- WITH ranked AS (
+--   SELECT ..., DENSE_RANK() OVER (...) AS rnk
+--   FROM ...
+-- )
+-- SELECT * FROM ranked WHERE rnk <= 3;
+--
+-- 💡 POURQUOI C'EST UTILE ?
+-- Les window functions permettent de faire des classements à l'intérieur
+-- de groupes sans perdre les détails individuels (contrairement à GROUP BY).
+-- ============================================

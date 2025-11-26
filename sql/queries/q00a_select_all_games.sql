@@ -1,0 +1,25 @@
+-- ============================================
+-- EXERCICE: Sélectionner tous les jeux (premières lignes)
+-- NIVEAU: 🟢 Débutant
+-- CONCEPTS: SELECT *, LIMIT
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 0 : https://sqlzoo.net/wiki/SELECT_basics
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à récupérer toutes les colonnes d'une table avec SELECT *
+-- et limiter le nombre de résultats avec LIMIT.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT * FROM nom_table LIMIT nombre;
+--
+-- ============================================
+-- CONSIGNE:
+-- Sélectionnez TOUTES les colonnes de la table 'games'
+-- et limitez les résultats aux 10 premières lignes.
+--
+-- Colonnes attendues: toutes les colonnes de la table games
+-- (id, rawg_id, name, released, year, metacritic, rating, ratings_count, playtime, esrb)
+--
+-- Nombre de lignes: 10
+-- ============================================

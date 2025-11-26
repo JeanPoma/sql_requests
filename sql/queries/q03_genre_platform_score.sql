@@ -1,8 +1,50 @@
--- CONSIGNE: Calculer, pour chaque couple (genre, plateforme), le Metacritic moyen et le nombre de jeux.
--- Colonnes: genre, platform, meta_avg, n_games
--- Jointures: games -> game_genres -> genres; games -> game_platforms -> platforms
--- Filtres: garder uniquement les jeux avec metacritic NOT NULL
--- Agrégation: AVG(metacritic), COUNT(*)
--- HAVING: n_games >= 20
+-- ============================================
+-- EXERCICE: Score moyen par genre et plateforme
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: GROUP BY multi-colonnes, jointures multiples, HAVING
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 5 : https://sqlzoo.net/wiki/SUM_and_COUNT
+-- - Tutorial 6 : https://sqlzoo.net/wiki/The_JOIN_operation
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Maîtriser GROUP BY avec plusieurs colonnes pour créer des agrégations
+-- à plusieurs dimensions, combiné avec des jointures multiples.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT col1, col2, AVG(col3) AS moyenne, COUNT(*) AS total
+-- FROM table1
+-- JOIN table2 ON ...
+-- WHERE condition
+-- GROUP BY col1, col2
+-- HAVING total >= seuil
+-- ORDER BY moyenne DESC;
+--
+-- ============================================
+-- CONSIGNE:
+-- Calculez, pour chaque couple (genre, plateforme), le Metacritic moyen
+-- et le nombre de jeux.
+--
+-- Colonnes attendues: genre, platform, meta_avg, n_games
+--
+-- Jointures nécessaires:
+-- - games -> game_genres -> genres (pour obtenir le nom du genre)
+-- - games -> game_platforms -> platforms (pour obtenir le code plateforme)
+--
+-- Filtres: metacritic IS NOT NULL
+-- Agrégation: AVG(metacritic) AS meta_avg, COUNT(*) AS n_games
+-- HAVING: n_games >= 20 (exclure les combinaisons avec peu de jeux)
 -- Ordre: meta_avg DESC, n_games DESC
 -- Limit: 50
+--
+-- 💡 ASTUCE SCHÉMA:
+-- games (id, metacritic)
+--   ↓ game_genres (game_id, genre_id)
+--   ↓ genres (id, name)
+--   ↓ game_platforms (game_id, platform_id)
+--   ↓ platforms (id, code)
+--
+-- 💡 POURQUOI HAVING ?
+-- HAVING filtre APRÈS l'agrégation (contrairement à WHERE qui filtre AVANT).
+-- On l'utilise pour filtrer sur des résultats d'agrégats (COUNT, AVG, etc.)
+-- ============================================

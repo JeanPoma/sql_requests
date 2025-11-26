@@ -1,0 +1,30 @@
+-- ============================================
+-- EXERCICE: Filtrer avec WHERE (condition simple)
+-- NIVEAU: 🟢 Débutant
+-- CONCEPTS: WHERE (condition unique)
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 1 : https://sqlzoo.net/wiki/SELECT_names
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à filtrer les résultats avec une clause WHERE.
+-- WHERE permet de ne sélectionner que les lignes qui respectent une condition.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT colonnes FROM table WHERE condition;
+--
+-- Exemple: WHERE year = 2020
+--          WHERE metacritic > 90
+--          WHERE name = 'The Witcher 3'
+--
+-- ============================================
+-- CONSIGNE:
+-- Sélectionnez les jeux sortis en 2020.
+--
+-- Colonnes à retourner: name, year, metacritic
+-- Filtre: year = 2020
+-- Ordre: metacritic DESC (du meilleur au moins bon score)
+-- Limiter à 15 résultats
+--
+-- 💡 ASTUCE: Utilisez WHERE year = 2020
+-- ============================================

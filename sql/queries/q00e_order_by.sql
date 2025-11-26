@@ -1,0 +1,34 @@
+-- ============================================
+-- EXERCICE: Trier les résultats avec ORDER BY
+-- NIVEAU: 🟢 Débutant
+-- CONCEPTS: ORDER BY (ASC/DESC), tri multi-colonnes
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 1 : https://sqlzoo.net/wiki/SELECT_names
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à trier les résultats par une ou plusieurs colonnes.
+-- - ASC : ordre croissant (du plus petit au plus grand)
+-- - DESC : ordre décroissant (du plus grand au plus petit)
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- ORDER BY colonne1 ASC, colonne2 DESC
+--
+-- Si on ne précise pas ASC/DESC, c'est ASC par défaut.
+--
+-- ============================================
+-- CONSIGNE:
+-- Sélectionnez les jeux avec un score Metacritic non nul.
+--
+-- Colonnes à retourner: name, year, metacritic, ratings_count
+-- Filtre: metacritic IS NOT NULL
+-- Ordre de tri (important !):
+--   1. Par metacritic décroissant (meilleurs scores d'abord)
+--   2. En cas d'égalité, par ratings_count décroissant (plus populaires)
+--   3. En cas d'égalité, par name alphabétique croissant
+--
+-- Limiter à 25 résultats
+--
+-- 💡 ASTUCE:
+-- ORDER BY metacritic DESC, ratings_count DESC, name ASC
+-- ============================================

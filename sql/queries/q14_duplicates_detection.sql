@@ -1,4 +1,35 @@
--- CONSIGNE: Détecter d’éventuels doublons de jeux par (name, year) et compter le nombre d’occurrences.
--- Colonnes: name, year, n
+-- ============================================
+-- EXERCICE: Détection de doublons
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: GROUP BY, HAVING, data quality
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à détecter des doublons dans vos données,
+-- une compétence essentielle pour le nettoyage de données.
+--
+-- ============================================
+-- CONSIGNE:
+-- Détectez d'éventuels doublons de jeux par couple (name, year)
+-- et comptez le nombre d'occurrences.
+--
+-- Colonnes: name, year, n (nombre d'occurrences)
+--
+-- Logique:
+-- - Grouper par (name, year)
+-- - Compter le nombre de lignes par groupe
+-- - Garder uniquement les groupes avec n > 1 (doublons)
+--
 -- HAVING: n > 1
--- Ordre: n DESC, name ASC
+-- Ordre: n DESC (doublons les plus fréquents d'abord), name ASC
+--
+-- 💡 STRUCTURE:
+-- SELECT name, year, COUNT(*) AS n
+-- FROM games
+-- GROUP BY name, year
+-- HAVING n > 1
+-- ORDER BY n DESC, name ASC;
+--
+-- 💡 POURQUOI C'EST IMPORTANT ?
+-- Les doublons peuvent fausser vos analyses (comptages, moyennes).
+-- Il faut les identifier avant de faire des calculs statistiques.
+-- ============================================

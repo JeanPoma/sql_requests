@@ -1,3 +1,43 @@
--- CONSIGNE: Produire une requête sélective sur games.year pour tirer parti de l’index idx_games_year.
+-- ============================================
+-- EXERCICE: Sélectivité des index
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: Index, performance, optimisation
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Comprendre comment les index améliorent les performances
+-- et comment écrire des requêtes qui en tirent parti.
+--
+-- ============================================
+-- CONSIGNE:
+-- Produisez une requête sélective sur games.year pour tirer parti
+-- de l'index idx_games_year.
+--
 -- Par exemple: WHERE year BETWEEN 2005 AND 2015
--- Colonnes: id, name, year
+--
+-- Colonnes attendues: id, name, year
+--
+-- 💡 QU'EST-CE QUE LA SÉLECTIVITÉ ?
+-- Une requête est sélective si elle retourne peu de lignes
+-- par rapport au total. Les index sont plus efficaces sur
+-- des requêtes sélectives.
+--
+-- Exemples:
+-- - Très sélectif: WHERE year = 2020 (peu de lignes)
+-- - Peu sélectif: WHERE year > 1990 (beaucoup de lignes)
+--
+-- 💡 INDEX DISPONIBLES:
+-- - idx_games_year sur la colonne year
+-- - idx_games_name sur la colonne name
+--
+-- Filtres suggérés:
+-- - BETWEEN pour un range d'années
+-- - IN pour une liste d'années
+-- - = pour une année précise
+--
+-- Ordre: year ASC, name ASC
+-- Limit: 100
+--
+-- 💡 VÉRIFIER L'UTILISATION:
+-- Utilisez EXPLAIN pour voir si l'index est utilisé:
+-- EXPLAIN SELECT ... WHERE year BETWEEN 2005 AND 2015;
+-- ============================================

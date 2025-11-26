@@ -1,2 +1,41 @@
--- CONSIGNE: Écrire la requête du fichier précédent, mais ici vous ne mettez que la requête principale (sans EXPLAIN).
--- Le test appellera EXPLAIN sur ce SQL et vérifiera l’utilisation de l’index.
+-- ============================================
+-- EXERCICE: Analyse avec EXPLAIN
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: EXPLAIN, query plan, optimisation
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à analyser le plan d'exécution d'une requête
+-- pour comprendre comment elle est exécutée par MariaDB.
+--
+-- ============================================
+-- CONSIGNE:
+-- Écrivez la requête du fichier précédent (q16), mais ici
+-- vous ne mettez QUE la requête principale (sans EXPLAIN).
+--
+-- Le test appellera EXPLAIN sur ce SQL et vérifiera
+-- l'utilisation de l'index idx_games_year.
+--
+-- Colonnes: id, name, year
+-- Filtre suggéré: year BETWEEN 2005 AND 2015
+--
+-- 💡 QU'EST-CE QUE EXPLAIN ?
+-- EXPLAIN montre le "plan d'exécution" de votre requête:
+-- - Quels index sont utilisés
+-- - Dans quel ordre les tables sont jointes
+-- - Combien de lignes seront examinées
+-- - Le type de scan (index, full table scan, etc.)
+--
+-- 💡 COMMENT LIRE EXPLAIN:
+-- - type: ALL (mauvais, full scan) vs range/ref (bon, index)
+-- - key: nom de l'index utilisé (NULL = pas d'index)
+-- - rows: nombre estimé de lignes examinées
+--
+-- 💡 EXEMPLE:
+-- EXPLAIN SELECT id, name, year
+-- FROM games
+-- WHERE year BETWEEN 2005 AND 2015;
+--
+-- Résultat attendu:
+-- - key: idx_games_year (l'index est utilisé)
+-- - type: range (scan d'un range dans l'index)
+-- ============================================
