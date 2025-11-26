@@ -1,3 +1,60 @@
--- CONSIGNE: Avec une CTE, filtrer les jeux avec ratings_count >= 1000, puis retourner le TOP 20 par Metacritic.
--- Colonnes: name, metacritic, ratings_count
+-- ============================================
+-- EXERCICE: Filtrage avec CTE (Common Table Expression)
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: CTE (WITH clause), sous-requêtes, structuration du code
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 9 : https://sqlzoo.net/wiki/Window_LAG
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à utiliser les CTE (Common Table Expressions) pour structurer
+-- vos requêtes complexes et améliorer la lisibilité.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- WITH nom_cte AS (
+--   SELECT ...
+--   FROM ...
+--   WHERE ...
+-- )
+-- SELECT ...
+-- FROM nom_cte
+-- WHERE ...;
+--
+-- LES CTE C'EST COMME:
+-- - Des sous-requêtes nommées et réutilisables
+-- - Un moyen de décomposer une requête complexe en étapes
+-- - Plus lisible que des sous-requêtes imbriquées
+--
+-- ============================================
+-- CONSIGNE:
+-- Utilisez une CTE pour filtrer les jeux avec ratings_count >= 1000,
+-- puis retournez le TOP 20 par Metacritic.
+--
+-- Colonnes attendues: name, metacritic, ratings_count
+--
+-- Étapes:
+-- 1. Créer une CTE qui filtre les jeux populaires (ratings_count >= 1000)
+-- 2. Depuis cette CTE, sélectionner le TOP 20 par Metacritic
+--
 -- Ordre: metacritic DESC, ratings_count DESC
+-- Limit: 20
+--
+-- 💡 STRUCTURE ATTENDUE:
+-- WITH popular_games AS (
+--   SELECT name, metacritic, ratings_count
+--   FROM games
+--   WHERE ratings_count >= 1000
+--     AND metacritic IS NOT NULL
+-- )
+-- SELECT *
+-- FROM popular_games
+-- ORDER BY metacritic DESC, ratings_count DESC
+-- LIMIT 20;
+--
+-- 💡 POURQUOI UTILISER UNE CTE ICI ?
+-- Dans cet exemple simple, ce n'est pas obligatoire, mais c'est une
+-- bonne pratique pour les requêtes complexes. Les CTE permettent:
+-- - De décomposer la logique en étapes claires
+-- - De documenter chaque étape avec un nom explicite
+-- - De réutiliser une CTE plusieurs fois dans la même requête
+-- ============================================

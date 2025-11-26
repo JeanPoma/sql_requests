@@ -1,5 +1,66 @@
--- CONSIGNE: Par plateforme et année, calculer la moyenne mobile (fenêtre) du Metacritic sur 3 années (courante et 2 précédentes).
--- Colonnes: platform, year, meta_avg_roll
--- Indices: utiliser window frame ROWS/RANGE approprié.
--- Filtres: year NOT NULL, metacritic NOT NULL.
+-- ============================================
+-- EXERCICE: Moyenne mobile sur 3 ans par plateforme
+-- NIVEAU: 🟡 Intermédiaire (avancé)
+-- CONCEPTS: Window Functions, moyennes mobiles, ROWS/RANGE
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 8+ : https://sqlzoo.net/wiki/Window_functions
+-- - Tutorial 9 : https://sqlzoo.net/wiki/Window_LAG
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à calculer des moyennes mobiles (rolling averages) avec
+-- les window functions et comprendre les window frames (ROWS vs RANGE).
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT colonnes,
+--        AVG(colonne) OVER (
+--          PARTITION BY groupe
+--          ORDER BY annee
+--          ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+--        ) AS moyenne_mobile
+-- FROM table;
+--
+-- WINDOW FRAME expliqué:
+-- - ROWS: compte les lignes physiques
+-- - RANGE: utilise les valeurs logiques
+-- - BETWEEN 2 PRECEDING AND CURRENT ROW: 3 lignes (2 avant + actuelle)
+--
+-- ============================================
+-- CONSIGNE:
+-- Par plateforme et année, calculez la moyenne mobile du Metacritic
+-- sur 3 années (année courante et 2 précédentes).
+--
+-- Colonnes attendues: platform, year, meta_avg_roll
+--
+-- Stratégie:
+-- 1. Créer une sous-requête/CTE qui agrège par (platform, year)
+--    pour obtenir une ligne par plateforme/année
+-- 2. Appliquer la window function sur ces données agrégées
+--
+-- Window function:
+-- - Partitionnée par platform (chaque plateforme indépendamment)
+-- - Ordonnée par year
+-- - Frame: ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+--
+-- Filtres: year IS NOT NULL, metacritic IS NOT NULL
 -- Ordre final: platform ASC, year ASC
+--
+-- 💡 EXEMPLE:
+-- PS4 2018 : moyenne de (2016, 2017, 2018)
+-- PS4 2019 : moyenne de (2017, 2018, 2019)
+-- PS4 2020 : moyenne de (2018, 2019, 2020)
+--
+-- 💡 ASTUCE STRUCTURE:
+-- WITH yearly_avg AS (
+--   SELECT platform, year, AVG(metacritic) AS meta_avg
+--   FROM ... JOIN ...
+--   GROUP BY platform, year
+-- )
+-- SELECT platform, year,
+--        AVG(meta_avg) OVER (
+--          PARTITION BY platform
+--          ORDER BY year
+--          ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+--        ) AS meta_avg_roll
+-- FROM yearly_avg;
+-- ============================================

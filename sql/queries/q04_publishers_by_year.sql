@@ -1,8 +1,42 @@
--- CONSIGNE: Par éditeur et par année, compter le nombre de jeux et le Metacritic moyen.
--- Colonnes: publisher, year, nb, meta_avg
+-- ============================================
+-- EXERCICE: Productivité des éditeurs par année
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: GROUP BY, jointures, agrégats multiples, HAVING
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 5 : https://sqlzoo.net/wiki/SUM_and_COUNT
+-- - Tutorial 6 : https://sqlzoo.net/wiki/The_JOIN_operation
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Analyser la performance des éditeurs année par année en combinant
+-- plusieurs métriques (quantité et qualité).
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT col1, col2, COUNT(*) AS nb, AVG(col3) AS moyenne
+-- FROM table1
+-- JOIN table2 ON ...
+-- WHERE condition
+-- GROUP BY col1, col2
+-- HAVING nb >= seuil;
+--
+-- ============================================
+-- CONSIGNE:
+-- Par éditeur et par année, comptez le nombre de jeux publiés
+-- et calculez le Metacritic moyen.
+--
+-- Colonnes attendues: publisher, year, nb, meta_avg
+--
 -- Jointures: games -> game_publishers -> publishers
--- Filtres: year NOT NULL
+-- Filtres: year IS NOT NULL
 -- Group by: publisher, year
--- Having: nb >= 10
+-- Having: nb >= 10 (éditeurs productifs uniquement)
 -- Order: meta_avg DESC, nb DESC
 -- Limit: 50
+--
+-- 💡 QUESTION À SE POSER:
+-- Quels éditeurs sortent beaucoup de jeux de qualité ?
+-- Y a-t-il des années exceptionnelles pour certains éditeurs ?
+--
+-- 💡 ASTUCE:
+-- Utilisez ROUND(AVG(metacritic), 2) pour arrondir la moyenne
+-- ============================================

@@ -1,0 +1,34 @@
+-- ============================================
+-- EXERCICE: Compter avec COUNT (agrégat basique)
+-- NIVEAU: 🟢 Débutant
+-- CONCEPTS: COUNT, agrégats de base
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 2 : https://sqlzoo.net/wiki/SELECT_from_WORLD_Tutorial
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à utiliser COUNT pour compter le nombre de lignes.
+-- COUNT est une fonction d'agrégation qui retourne un nombre.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT COUNT(*) FROM table WHERE condition;
+-- SELECT COUNT(colonne) FROM table;  -- compte les valeurs non-NULL
+--
+-- Différence importante:
+-- - COUNT(*) : compte TOUTES les lignes
+-- - COUNT(colonne) : compte les lignes où colonne IS NOT NULL
+--
+-- ============================================
+-- CONSIGNE:
+-- Comptez le nombre de jeux qui ont un score Metacritic renseigné (non NULL).
+--
+-- Colonne à retourner: nommez le résultat 'total_games_with_score'
+-- Filtre: metacritic IS NOT NULL
+--
+-- Résultat attendu: une seule ligne avec un nombre
+--
+-- 💡 ASTUCE:
+-- SELECT COUNT(*) AS total_games_with_score
+-- FROM games
+-- WHERE metacritic IS NOT NULL;
+-- ============================================

@@ -1,2 +1,45 @@
--- CONSIGNE: Utiliser LAG/LEAD pour comparer le Metacritic d’un jeu à celui du jeu précédent de la même plateforme (ordonné par year desc, puis metacritic desc).
--- Colonnes: platform, name, year, metacritic, prev_meta, diff_meta
+-- ============================================
+-- EXERCICE: LEAD/LAG (fonctions de fenêtre avancées)
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: LEAD, LAG, window functions, analyses temporelles
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Maîtriser LEAD et LAG pour accéder aux lignes précédentes/suivantes
+-- dans un ensemble ordonné, utile pour les comparaisons temporelles.
+--
+-- 💡 LEAD vs LAG:
+-- - LAG(col, n): accède à la ligne n positions AVANT
+-- - LEAD(col, n): accède à la ligne n positions APRÈS
+--
+-- ============================================
+-- CONSIGNE:
+-- Utilisez LAG/LEAD pour comparer le Metacritic d'un jeu
+-- à celui du jeu précédent de la même plateforme
+-- (ordonné par year DESC, puis metacritic DESC).
+--
+-- Colonnes attendues: platform, name, year, metacritic, prev_meta, diff_meta
+--
+-- Calculs:
+-- - prev_meta: Metacritic du jeu précédent (LAG)
+-- - diff_meta: metacritic - prev_meta (différence)
+--
+-- 💡 STRUCTURE:
+-- SELECT platform, name, year, metacritic,
+--        LAG(metacritic, 1) OVER (
+--          PARTITION BY platform
+--          ORDER BY year DESC, metacritic DESC
+--        ) AS prev_meta,
+--        metacritic - LAG(metacritic, 1) OVER (...) AS diff_meta
+-- FROM games
+-- JOIN game_platforms ...
+-- WHERE metacritic IS NOT NULL
+--
+-- Filtres: metacritic IS NOT NULL
+-- Ordre: platform ASC, year DESC, metacritic DESC
+-- Limit: 100
+--
+-- 💡 CAS D'USAGE:
+-- - Analyser l'évolution des scores dans le temps
+-- - Détecter des tendances (amélioration/dégradation)
+-- - Comparer des performances relatives
+-- ============================================

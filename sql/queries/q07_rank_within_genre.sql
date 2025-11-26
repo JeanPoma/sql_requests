@@ -1,5 +1,46 @@
--- CONSIGNE: Pour chaque genre, classer les jeux par Metacritic et exposer le rang.
--- Colonnes: genre, name, metacritic, rnk
--- Filtres: metacritic NOT NULL
+-- ============================================
+-- EXERCICE: Classement des jeux par genre
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: Window Functions, RANK, PARTITION BY
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 8+ : https://sqlzoo.net/wiki/Window_functions
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Pratiquer le classement avec RANK/DENSE_RANK à l'intérieur de groupes.
+-- Comprendre comment obtenir le TOP N par catégorie.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT colonnes,
+--        RANK() OVER (PARTITION BY categorie ORDER BY score DESC) AS rnk
+-- FROM table;
+--
+-- ============================================
+-- CONSIGNE:
+-- Pour chaque genre, classez les jeux par Metacritic et exposez le rang.
+--
+-- Colonnes attendues: genre, name, metacritic, rnk
+--
+-- Window function:
+-- - Partitionnée par genre (chaque genre a son classement indépendant)
+-- - Ordonnée par metacritic DESC
+-- - Utilisez RANK() ou DENSE_RANK()
+--
+-- Filtres: metacritic IS NOT NULL
 -- Ordre final: genre ASC, rnk ASC
--- Option: limiter à rnk<=5 pour réduire la taille.
+--
+-- Option recommandée: limiter à rnk <= 5 pour réduire le volume de résultats
+--
+-- 💡 STRUCTURE:
+-- Vous aurez besoin de jointures:
+-- games -> game_genres -> genres
+--
+-- Puis appliquez la window function, et enfin filtrez sur rnk <= 5
+--
+-- 💡 RÉSULTAT ATTENDU:
+-- Action       | The Witcher 3    | 98 | 1
+-- Action       | GTA V            | 97 | 2
+-- Action       | ...
+-- Adventure    | Portal 2         | 95 | 1
+-- Adventure    | ...
+-- ============================================

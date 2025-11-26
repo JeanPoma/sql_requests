@@ -1,0 +1,36 @@
+-- ============================================
+-- EXERCICE: Pagination avec LIMIT et OFFSET
+-- NIVEAU: 🟢 Débutant
+-- CONCEPTS: LIMIT, OFFSET (pagination)
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 1 : https://sqlzoo.net/wiki/SELECT_names
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à paginer les résultats avec LIMIT et OFFSET.
+-- - LIMIT : nombre maximum de lignes à retourner
+-- - OFFSET : nombre de lignes à sauter avant de commencer
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- LIMIT nombre OFFSET nombre_a_sauter
+--
+-- Exemple: pour afficher la page 3 avec 10 résultats par page:
+-- LIMIT 10 OFFSET 20  (on saute les 20 premiers, on prend les 10 suivants)
+--
+-- ============================================
+-- CONSIGNE:
+-- Sélectionnez les jeux avec un score Metacritic >= 80,
+-- triés par score décroissant.
+--
+-- Retournez la "2ème page" de résultats avec 10 jeux par page.
+-- (Donc: sauter les 10 premiers, retourner les 10 suivants)
+--
+-- Colonnes à retourner: name, year, metacritic
+-- Filtre: metacritic >= 80
+-- Ordre: metacritic DESC, name ASC
+-- Pagination: 10 résultats, en sautant les 10 premiers (OFFSET 10)
+--
+-- 💡 ASTUCE:
+-- Calculez l'OFFSET: page 2 = (2-1) × 10 = 10
+-- LIMIT 10 OFFSET 10
+-- ============================================

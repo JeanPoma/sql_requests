@@ -1,5 +1,36 @@
--- CONSIGNE: Lister les 10 meilleurs jeux sortis en 2015 ou après.
--- Colonnes: name, year, metacritic, ratings_count
--- Filtres: year >= 2015 AND metacritic IS NOT NULL
--- Ordre: metacritic DESC, ratings_count DESC
--- Limit: 10
+-- ============================================
+-- EXERCICE: TOP 10 des meilleurs jeux récents (2015+)
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: WHERE avec conditions multiples, ORDER BY, LIMIT
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 2 : https://sqlzoo.net/wiki/SELECT_from_WORLD_Tutorial
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Combiner des filtres multiples (date + valeur non NULL)
+-- avec un tri pour obtenir un classement.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT colonnes
+-- FROM table
+-- WHERE condition1 AND condition2
+-- ORDER BY col1 DESC, col2 DESC
+-- LIMIT nombre;
+--
+-- ============================================
+-- CONSIGNE:
+-- Listez les 10 meilleurs jeux sortis en 2015 ou après.
+--
+-- Colonnes attendues: name, year, metacritic, ratings_count
+--
+-- Filtres:
+-- - year >= 2015
+-- - metacritic IS NOT NULL (exclure les jeux sans score)
+--
+-- Ordre: metacritic DESC, puis ratings_count DESC
+-- Limiter à 10 résultats
+--
+-- 💡 POURQUOI CE FILTRE ?
+-- Les jeux récents sont souvent plus pertinents et les données
+-- plus complètes. IS NOT NULL évite les valeurs manquantes.
+-- ============================================

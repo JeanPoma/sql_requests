@@ -1,3 +1,49 @@
--- CONSIGNE: Détecter, par plateforme, les "îles" d’années contiguës où il existe au moins 1 jeu avec metacritic NOT NULL.
+-- ============================================
+-- EXERCICE: Gaps & Islands (séquences continues)
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: Séquences, ROW_NUMBER, patterns complexes
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Résoudre le problème classique "Gaps and Islands":
+-- identifier des séquences continues dans des données.
+--
+-- 💡 QU'EST-CE QUE "GAPS & ISLANDS" ?
+-- - Islands (îles): groupes de valeurs consécutives
+-- - Gaps (trous): absences dans la séquence
+--
+-- Exemple avec des années: 2010, 2011, 2012, [GAP], 2015, 2016
+-- → 2 islands: [2010-2012] et [2015-2016]
+--
+-- ============================================
+-- CONSIGNE:
+-- Détectez, par plateforme, les "îles" d'années contiguës
+-- où il existe au moins 1 jeu avec metacritic NOT NULL.
+--
 -- Sortie: platform, start_year, end_year, span_years
--- Astuce: numéroter les années et grouper par (year - ROW_NUMBER()).
+--
+-- 💡 TECHNIQUE (Astuce classique):
+-- 1. Pour chaque ligne, calculer: year - ROW_NUMBER()
+--    → Les années consécutives auront la même valeur
+-- 2. Grouper par cette valeur pour identifier les îles
+-- 3. Calculer MIN(year) et MAX(year) par île
+--
+-- 💡 STRUCTURE SUGGÉRÉE:
+-- WITH numbered AS (
+--   SELECT DISTINCT platform, year,
+--          year - ROW_NUMBER() OVER (PARTITION BY platform ORDER BY year) AS grp
+--   FROM games JOIN game_platforms ...
+--   WHERE metacritic IS NOT NULL AND year IS NOT NULL
+-- )
+-- SELECT platform,
+--        MIN(year) AS start_year,
+--        MAX(year) AS end_year,
+--        MAX(year) - MIN(year) + 1 AS span_years
+-- FROM numbered
+-- GROUP BY platform, grp
+-- ORDER BY platform, start_year;
+--
+-- 💡 CAS D'USAGE:
+-- - Analyser la continuité de la production
+-- - Identifier les périodes d'inactivité
+-- - Détecter des patterns temporels
+-- ============================================

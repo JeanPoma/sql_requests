@@ -1,4 +1,34 @@
--- CONSIGNE: Sélectionner les 5 jeux avec le meilleur Metacritic.
+-- ============================================
+-- EXERCICE: TOP 5 des jeux par score Metacritic
+-- NIVEAU: 🟡 Intermédiaire
+-- CONCEPTS: ORDER BY multi-colonnes, LIMIT, tri complexe
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 2 : https://sqlzoo.net/wiki/SELECT_from_WORLD_Tutorial
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Maîtriser le tri avec plusieurs critères de priorité.
+-- Le premier critère est prioritaire, puis en cas d'égalité on utilise le suivant.
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT colonnes
+-- FROM table
+-- ORDER BY colonne1 DESC, colonne2 DESC, colonne3 ASC
+-- LIMIT nombre;
+--
+-- ============================================
+-- CONSIGNE:
+-- Sélectionnez les 5 jeux avec le meilleur Metacritic.
+--
 -- Colonnes attendues: name, metacritic
--- Ordre: metacritic DESC, puis ratings_count DESC, puis name ASC
--- Limiter à 5 lignes.
+--
+-- Ordre de tri (important pour les égalités):
+--   1. metacritic décroissant (meilleurs scores d'abord)
+--   2. en cas d'égalité: ratings_count décroissant (plus populaires)
+--   3. en cas d'égalité: name alphabétique croissant
+--
+-- Limiter à 5 lignes
+--
+-- 💡 ASTUCE:
+-- ORDER BY metacritic DESC, ratings_count DESC, name ASC
+-- ============================================

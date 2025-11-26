@@ -1,4 +1,37 @@
--- CONSIGNE: Calculer, pour chaque année, le percentile (ex: P90) du Metacritic.
+-- ============================================
+-- EXERCICE: Calcul de percentiles par année
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: Percentiles, window functions avancées, NTILE
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à calculer des percentiles (P90, médiane, etc.)
+-- pour analyser la distribution des données.
+--
+-- 💡 QU'EST-CE QU'UN PERCENTILE ?
+-- P90 = valeur en dessous de laquelle se trouvent 90% des observations
+-- Exemple: P90 = 85 signifie que 90% des jeux ont un score <= 85
+--
+-- ============================================
+-- CONSIGNE:
+-- Calculez, pour chaque année, le percentile P90 du Metacritic.
+--
 -- Colonnes: year, p90
--- Astuce: MariaDB peut simuler un percentile via window (PERCENT_RANK) et/ou en combinant NTILE; 
--- acceptez une approximation robuste (ex: valeur au rang ceil(0.9*n)).
+--
+-- 💡 ASTUCE MARIADB:
+-- MariaDB ne supportant pas PERCENTILE_CONT nativement, plusieurs approches:
+-- 
+-- 1. Avec NTILE (approximation):
+--    - Divisez en 10 groupes avec NTILE(10)
+--    - Prenez le max du groupe 9
+--
+-- 2. Avec ROW_NUMBER:
+--    - Numérotez les lignes ordonnées par metacritic
+--    - Prenez la ligne à position CEIL(0.9 * COUNT(*))
+--
+-- Filtres: year IS NOT NULL, metacritic IS NOT NULL
+-- Ordre: year DESC
+--
+-- 💡 POURQUOI C'EST UTILE ?
+-- Les percentiles donnent une meilleure vue de la distribution
+-- que la simple moyenne (moins sensibles aux valeurs extrêmes).
+-- ============================================

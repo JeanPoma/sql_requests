@@ -1,0 +1,43 @@
+-- ============================================
+-- EXERCICE: Fonctions d'agrégation (AVG, MIN, MAX)
+-- NIVEAU: 🟢 Débutant
+-- CONCEPTS: AVG, MIN, MAX, COUNT
+--
+-- 📚 Ressources SQLZoo recommandées :
+-- - Tutorial 2 : https://sqlzoo.net/wiki/SELECT_from_WORLD_Tutorial
+-- - Tutorial 5 : https://sqlzoo.net/wiki/SUM_and_COUNT
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à utiliser les fonctions d'agrégation pour calculer
+-- des statistiques sur vos données:
+-- - AVG() : moyenne
+-- - MIN() : minimum
+-- - MAX() : maximum
+-- - COUNT() : comptage
+--
+-- 💡 RAPPEL DE SYNTAXE:
+-- SELECT AVG(colonne), MIN(colonne), MAX(colonne)
+-- FROM table
+-- WHERE condition;
+--
+-- ============================================
+-- CONSIGNE:
+-- Calculez des statistiques sur les scores Metacritic des jeux sortis après 2015.
+--
+-- Colonnes à retourner (dans cet ordre, avec ces noms exacts):
+-- - avg_score : la moyenne des scores Metacritic (arrondie à 2 décimales avec ROUND)
+-- - min_score : le score minimum
+-- - max_score : le score maximum
+-- - total_games : le nombre total de jeux
+--
+-- Filtres: year > 2015 AND metacritic IS NOT NULL
+--
+-- 💡 ASTUCES:
+-- - Utilisez ROUND(AVG(metacritic), 2) pour arrondir
+-- - Pour les alias: AVG(metacritic) AS avg_score
+-- - Une seule ligne sera retournée (c'est normal pour les agrégats sans GROUP BY)
+--
+-- Exemple de résultat attendu (valeurs fictives):
+-- avg_score | min_score | max_score | total_games
+-- 72.45     | 15        | 98        | 12500
+-- ============================================

@@ -1,5 +1,39 @@
--- CONSIGNE: Contrôles qualité basiques du dataset.
--- (1) part de lignes avec year IS NULL
--- (2) part de lignes avec metacritic IS NULL
--- (3) distribution par ESRB (si dispo)
--- Retourner 3 requêtes séparées, ou une requête UNION ALL avec un champ check_name.
+-- ============================================
+-- EXERCICE: Contrôles qualité du dataset
+-- NIVEAU: 🔴 Avancé
+-- CONCEPTS: Data quality, UNION ALL, calculs de pourcentages
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Apprendre à auditer la qualité d'un dataset en calculant
+-- des métriques de complétude et de distribution.
+--
+-- ============================================
+-- CONSIGNE:
+-- Effectuez des contrôles qualité basiques du dataset:
+-- (1) Part de lignes avec year IS NULL
+-- (2) Part de lignes avec metacritic IS NULL
+-- (3) Distribution par ESRB (si disponible)
+--
+-- Retournez 3 requêtes séparées combinées avec UNION ALL,
+-- avec une colonne check_name pour identifier chaque contrôle.
+--
+-- 💡 STRUCTURE SUGGÉRÉE:
+-- SELECT 'year_null_pct' AS check_name,
+--        ROUND(100.0 * SUM(CASE WHEN year IS NULL THEN 1 ELSE 0 END) / COUNT(*), 2) AS value
+-- FROM games
+-- UNION ALL
+-- SELECT 'metacritic_null_pct' AS check_name,
+--        ROUND(100.0 * SUM(CASE WHEN metacritic IS NULL THEN 1 ELSE 0 END) / COUNT(*), 2)
+-- FROM games
+-- UNION ALL
+-- SELECT CONCAT('esrb_', COALESCE(esrb, 'unknown')) AS check_name,
+--        COUNT(*) AS value
+-- FROM games
+-- GROUP BY esrb;
+--
+-- 💡 POURQUOI C'EST CRUCIAL ?
+-- Avant toute analyse, il faut comprendre:
+-- - La complétude des données (% de NULL)
+-- - La distribution des valeurs
+-- - Les biais potentiels
+-- ============================================
