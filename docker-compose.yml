@@ -1,26 +1,27 @@
 services:
-  mariadb:
-    image: mariadb:11
+  postgres:
+    image: postgres:16
     environment:
-      MARIADB_ROOT_PASSWORD: secret
-      MARIADB_DATABASE: vg
-    ports: [ "127.0.0.1:3306:3306" ]
+      POSTGRES_PASSWORD: rootpwd
+      POSTGRES_USER: root
+      POSTGRES_DB: vg
+    ports: [ "127.0.0.1:5432:5432" ]
     volumes:
       - ./sql/schema:/docker-entrypoint-initdb.d
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
   app:
     image: python:3.11-slim
-    depends_on: [ mariadb ]
+    depends_on: [ postgres ]
     working_dir: /app
     volumes:
       - ./:/app
     environment:
-      DB_URL: mysql+pymysql://root:secret@mariadb:3306/vg
+      DB_URL: postgresql+psycopg2://root:rootpwd@postgres:5432/vg
       CSV_PATH: data/rawg_games.csv
     command: bash -lc "pip install -r requirements.txt && pytest -q"
   adminer:
     image: adminer:latest
-    depends_on: [ mariadb ]
+    depends_on: [ postgres ]
     ports:
       - "127.0.0.1:8080:8080"
 volumes:

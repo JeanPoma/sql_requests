@@ -2,4 +2,4 @@ pytest
 SQLAlchemy
 pandas
 python-dotenv
-pymysql
+psycopg2-binary

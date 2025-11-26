@@ -3,7 +3,7 @@ import sqlalchemy as sa
 from sqlalchemy import text
 from datetime import datetime
 
-DB_URL = os.getenv("DB_URL", "mysql+pymysql://root:secret@mariadb:3306/vg")
+DB_URL = os.getenv("DB_URL", "postgresql+psycopg2://root:rootpwd@postgres:5432/vg")
 CSV_PATH = os.getenv("CSV_PATH", "data/rawg_games.csv")
 SEP = "||"  # séparateur de listes dans le CSV Kaggle (jummyegg)
 
@@ -47,10 +47,10 @@ def main():
                     """
                     INSERT INTO games(rawg_id, name, released, year, metacritic, rating, ratings_count, playtime, esrb)
                     VALUES(:rid,:n,:rel,:y,:m,:r,:rc,:pt,:esrb)
+                    RETURNING id
                     """
                 ), dict(rid=rawg_id, n=name, rel=released, y=year, m=metacritic, r=rating, rc=ratings_count, pt=playtime, esrb=esrb))
-                # print(res.lastrowid)
-                game_id = res.lastrowid
+                game_id = res.scalar()
                 if not game_id:
                     game_id = conn.execute(text(
                         "SELECT id FROM games WHERE name=:n AND ((released=:rel) OR (released IS NULL AND :rel IS NULL)) ORDER BY id DESC LIMIT 1"
@@ -60,8 +60,9 @@ def main():
                     for v in values:
                         obj_id = conn.execute(text(f"SELECT id FROM {table} WHERE {key}=:v"), {"v": v}).scalar()
                         if not obj_id:
-                            obj_id = conn.execute(text(f"INSERT INTO {table}({key}) VALUES(:v)"), {"v": v}).lastrowid
-                        conn.execute(text(f"INSERT IGNORE INTO {link_table}(game_id, {link_fk}) VALUES(:g,:o)"),
+                            result = conn.execute(text(f"INSERT INTO {table}({key}) VALUES(:v) RETURNING id"), {"v": v})
+                            obj_id = result.scalar()
+                        conn.execute(text(f"INSERT INTO {link_table}(game_id, {link_fk}) VALUES(:g,:o) ON CONFLICT DO NOTHING"),
                                      {"g": game_id, "o": obj_id})
 
                 platforms = parse_list(r.get(get("platforms"))) if get("platforms") else []
