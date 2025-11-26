@@ -1,0 +1,85 @@
+-- ============================================
+-- EXERCICE: Trigger BEFORE INSERT (validation)
+-- NIVEAU: 🔴 Avancé - Triggers
+-- CONCEPTS: BEFORE INSERT, validation, SIGNAL
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
+-- - [Trigger Overview](https://mariadb.com/kb/en/triggers/)
+-- - [SIGNAL](https://mariadb.com/kb/en/signal/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer un trigger qui valide les données AVANT insertion
+-- et empêche l'insertion si les données sont invalides.
+--
+-- 💡 QU'EST-CE QU'UN TRIGGER ?
+-- Un trigger est une procédure qui s'exécute automatiquement
+-- en réponse à un événement (INSERT, UPDATE, DELETE).
+--
+-- Types de triggers:
+-- - BEFORE : s'exécute AVANT l'opération (peut modifier/rejeter)
+-- - AFTER : s'exécute APRÈS l'opération (pour audit, notifications)
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez un trigger 'trg_validate_game_insert' qui valide les données
+-- avant l'insertion d'un nouveau jeu dans la table 'games'.
+--
+-- Nom: trg_validate_game_insert
+-- Table: games
+-- Moment: BEFORE INSERT
+--
+-- Validations:
+-- 1. Le nom du jeu (NEW.name) ne doit pas être vide
+--    → Si vide, SIGNAL avec message 'Game name cannot be empty'
+--
+-- 2. L'année (NEW.year) doit être entre 1970 et l'année courante
+--    → Si invalide, SIGNAL avec message 'Invalid game year'
+--
+-- 3. Si metacritic est fourni, il doit être entre 0 et 100
+--    → Si invalide, SIGNAL avec message 'Metacritic score must be between 0 and 100'
+--
+-- 💡 SYNTAXE:
+-- DELIMITER //
+-- CREATE TRIGGER trg_validate_game_insert
+-- BEFORE INSERT ON games
+-- FOR EACH ROW
+-- BEGIN
+--     -- NEW.colonne contient la nouvelle valeur à insérer
+--
+--     IF NEW.name IS NULL OR NEW.name = '' THEN
+--         SIGNAL SQLSTATE '45000'
+--         SET MESSAGE_TEXT = 'Game name cannot be empty';
+--     END IF;
+--
+--     IF NEW.year < 1970 OR NEW.year > YEAR(CURDATE()) THEN
+--         SIGNAL SQLSTATE '45000'
+--         SET MESSAGE_TEXT = 'Invalid game year';
+--     END IF;
+--
+--     IF NEW.metacritic IS NOT NULL AND (NEW.metacritic < 0 OR NEW.metacritic > 100) THEN
+--         SIGNAL SQLSTATE '45000'
+--         SET MESSAGE_TEXT = 'Metacritic score must be between 0 and 100';
+--     END IF;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- -- Cette insertion devrait réussir
+-- INSERT INTO games (name, year, metacritic) VALUES ('Valid Game', 2023, 85);
+--
+-- -- Cette insertion devrait échouer (nom vide)
+-- INSERT INTO games (name, year, metacritic) VALUES ('', 2023, 85);
+--
+-- -- Cette insertion devrait échouer (année invalide)
+-- INSERT INTO games (name, year, metacritic) VALUES ('Old Game', 1800, 85);
+--
+-- 💡 SIGNAL:
+-- SIGNAL permet de générer une erreur personnalisée.
+-- SQLSTATE '45000' est le code pour les erreurs définies par l'utilisateur.
+--
+-- 💡 NEW vs OLD:
+-- - NEW : contient les nouvelles valeurs (INSERT, UPDATE)
+-- - OLD : contient les anciennes valeurs (UPDATE, DELETE)
+-- ============================================
+

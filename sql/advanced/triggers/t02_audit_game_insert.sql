@@ -1,0 +1,79 @@
+-- ============================================
+-- EXERCICE: Trigger AFTER INSERT (audit log)
+-- NIVEAU: 🔴 Avancé - Triggers
+-- CONCEPTS: AFTER INSERT, audit trail, logging
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
+-- - [NOW()](https://mariadb.com/kb/en/now/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer un trigger qui enregistre automatiquement toutes les
+-- insertions dans une table d'audit pour traçabilité.
+--
+-- 💡 AUDIT TRAIL:
+-- Un audit trail (journal d'audit) enregistre toutes les modifications
+-- dans la base de données : qui, quoi, quand.
+--
+-- Utilisé pour:
+-- - Traçabilité (conformité RGPD, SOX, etc.)
+-- - Débogage (quand une donnée a été ajoutée ?)
+-- - Sécurité (détecter des modifications suspectes)
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez d'abord une table d'audit 'games_audit', puis un trigger
+-- 'trg_audit_game_insert' qui enregistre chaque insertion.
+--
+-- Étape 1: Créer la table games_audit
+-- CREATE TABLE IF NOT EXISTS games_audit (
+--     audit_id INT AUTO_INCREMENT PRIMARY KEY,
+--     game_id INT,
+--     game_name VARCHAR(255),
+--     operation VARCHAR(10),
+--     operation_time DATETIME,
+--     INDEX idx_audit_time (operation_time)
+-- );
+--
+-- Étape 2: Créer le trigger
+-- Nom: trg_audit_game_insert
+-- Table: games
+-- Moment: AFTER INSERT
+--
+-- Action:
+-- Insérer une ligne dans games_audit avec:
+-- - game_id: NEW.id
+-- - game_name: NEW.name
+-- - operation: 'INSERT'
+-- - operation_time: NOW()
+--
+-- 💡 SYNTAXE:
+-- DELIMITER //
+-- CREATE TRIGGER trg_audit_game_insert
+-- AFTER INSERT ON games
+-- FOR EACH ROW
+-- BEGIN
+--     INSERT INTO games_audit (game_id, game_name, operation, operation_time)
+--     VALUES (NEW.id, NEW.name, 'INSERT', NOW());
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- -- Insérer un jeu
+-- INSERT INTO games (name, year) VALUES ('Audited Game', 2023);
+--
+-- -- Vérifier l'audit
+-- SELECT * FROM games_audit WHERE operation = 'INSERT' ORDER BY operation_time DESC;
+--
+-- 💡 POURQUOI AFTER et pas BEFORE ?
+-- AFTER INSERT garantit que:
+-- - L'insertion a réussi
+-- - Les valeurs AUTO_INCREMENT (comme NEW.id) sont disponibles
+-- - Les contraintes d'intégrité sont vérifiées
+--
+-- 💡 CAS D'USAGE RÉELS:
+-- - Conformité réglementaire (banque, santé)
+-- - Traçabilité des modifications sensibles
+-- - Statistiques d'utilisation
+-- ============================================
+

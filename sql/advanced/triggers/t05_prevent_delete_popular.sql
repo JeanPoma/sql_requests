@@ -1,0 +1,81 @@
+-- ============================================
+-- EXERCICE: Trigger BEFORE DELETE (protection)
+-- NIVEAU: 🔴 Avancé - Triggers
+-- CONCEPTS: BEFORE DELETE, protection, SIGNAL
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
+-- - [SIGNAL](https://mariadb.com/kb/en/signal/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer un trigger qui empêche la suppression de données importantes
+-- selon une règle métier.
+--
+-- 💡 TRIGGERS DE PROTECTION:
+-- Les triggers BEFORE DELETE peuvent empêcher des suppressions
+-- accidentelles ou non autorisées en utilisant SIGNAL.
+--
+-- Cas d'usage:
+-- - Empêcher suppression de données critiques
+-- - Soft delete (marquer comme supprimé au lieu de supprimer)
+-- - Vérifier des permissions métier
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez un trigger 'trg_prevent_delete_popular' qui empêche
+-- la suppression de jeux très populaires.
+--
+-- Nom: trg_prevent_delete_popular
+-- Table: games
+-- Moment: BEFORE DELETE
+--
+-- Règle de protection:
+-- Si OLD.ratings_count > 1000, alors empêcher la suppression
+-- avec SIGNAL et message 'Cannot delete popular game with many ratings'
+--
+-- 💡 SYNTAXE:
+-- DELIMITER //
+-- CREATE TRIGGER trg_prevent_delete_popular
+-- BEFORE DELETE ON games
+-- FOR EACH ROW
+-- BEGIN
+--     -- OLD contient les valeurs de la ligne à supprimer
+--     IF OLD.ratings_count > 1000 THEN
+--         SIGNAL SQLSTATE '45000'
+--         SET MESSAGE_TEXT = 'Cannot delete popular game with many ratings';
+--     END IF;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- -- Essayer de supprimer un jeu populaire (devrait échouer)
+-- DELETE FROM games WHERE id = 123 AND ratings_count > 1000;
+-- -- Erreur: Cannot delete popular game with many ratings
+--
+-- -- Supprimer un jeu peu populaire (devrait réussir)
+-- DELETE FROM games WHERE id = 456 AND ratings_count <= 1000;
+--
+-- 💡 ALTERNATIVE: SOFT DELETE
+-- Au lieu d'empêcher la suppression, on peut faire un "soft delete":
+-- - Ajouter une colonne 'deleted_at' à la table
+-- - Dans le trigger BEFORE DELETE, faire un UPDATE au lieu de DELETE
+-- - Annuler le DELETE avec SIGNAL (ou le trigger ne fait rien)
+--
+-- Exemple de soft delete:
+-- BEFORE DELETE ON games
+-- BEGIN
+--     UPDATE games SET deleted_at = NOW() WHERE id = OLD.id;
+--     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Soft deleted';
+-- END
+--
+-- 💡 ATTENTION:
+-- - Le trigger s'applique à TOUTES les suppressions (même avec WHERE)
+-- - Pensez aux suppressions en cascade (foreign keys)
+-- - Pour désactiver temporairement: DROP TRIGGER
+--
+-- 💡 CAS D'USAGE:
+-- - Protection contre suppressions accidentelles
+-- - Conformité (conservation obligatoire de certaines données)
+-- - Workflow d'approbation (seul un admin peut supprimer)
+-- ============================================
+

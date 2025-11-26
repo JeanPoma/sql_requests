@@ -1,0 +1,93 @@
+-- ============================================
+-- EXERCICE: Trigger AFTER UPDATE (notifications)
+-- NIVEAU: 🔴 Avancé - Triggers
+-- CONCEPTS: AFTER UPDATE, conditional logic, notifications
+--
+-- 📚 Documentation MariaDB :
+-- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
+-- - [IF Statement](https://mariadb.com/kb/en/if/)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Créer un trigger qui détecte des événements spécifiques
+-- (ici: un jeu qui atteint un score exceptionnel) et enregistre
+-- une notification.
+--
+-- 💡 TRIGGERS POUR NOTIFICATIONS:
+-- Les triggers peuvent détecter des conditions métier importantes
+-- et déclencher des actions:
+-- - Enregistrer dans une table de notifications
+-- - Incrémenter des compteurs
+-- - Mettre à jour des statistiques
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une table 'notifications' puis un trigger qui détecte
+-- quand un jeu atteint un score Metacritic >= 95.
+--
+-- Étape 1: Créer la table notifications
+-- CREATE TABLE IF NOT EXISTS notifications (
+--     notif_id INT AUTO_INCREMENT PRIMARY KEY,
+--     game_id INT,
+--     game_name VARCHAR(255),
+--     message TEXT,
+--     created_at DATETIME,
+--     INDEX idx_notif_time (created_at)
+-- );
+--
+-- Étape 2: Créer le trigger
+-- Nom: trg_notify_high_score
+-- Table: games
+-- Moment: AFTER UPDATE
+--
+-- Action:
+-- Si NEW.metacritic >= 95 ET (OLD.metacritic < 95 OU OLD.metacritic IS NULL),
+-- alors insérer dans notifications:
+-- - game_id: NEW.id
+-- - game_name: NEW.name
+-- - message: 'High score achieved: [score]'
+-- - created_at: NOW()
+--
+-- 💡 SYNTAXE:
+-- DELIMITER //
+-- CREATE TRIGGER trg_notify_high_score
+-- AFTER UPDATE ON games
+-- FOR EACH ROW
+-- BEGIN
+--     -- Détecter si le jeu vient d'atteindre un score >= 95
+--     IF NEW.metacritic >= 95 AND
+--        (OLD.metacritic IS NULL OR OLD.metacritic < 95)
+--     THEN
+--         INSERT INTO notifications (game_id, game_name, message, created_at)
+--         VALUES (
+--             NEW.id,
+--             NEW.name,
+--             CONCAT('High score achieved: ', NEW.metacritic),
+--             NOW()
+--         );
+--     END IF;
+-- END //
+-- DELIMITER ;
+--
+-- 💡 UTILISATION:
+-- -- Mettre à jour un jeu pour atteindre 95+
+-- UPDATE games SET metacritic = 96 WHERE id = 123 AND (metacritic < 95 OR metacritic IS NULL);
+--
+-- -- Vérifier les notifications
+-- SELECT * FROM notifications ORDER BY created_at DESC;
+--
+-- 💡 POURQUOI AFTER UPDATE ?
+-- AFTER UPDATE garantit que:
+-- - La modification a bien été appliquée
+-- - Les contraintes sont validées
+-- - On peut utiliser NEW.id en toute sécurité
+--
+-- 💡 CONCAT:
+-- CONCAT() permet de concaténer des chaînes de caractères.
+-- Exemple: CONCAT('Score: ', NEW.metacritic) → 'Score: 96'
+--
+-- 💡 CAS D'USAGE RÉELS:
+-- - Alertes métier (stock faible, seuil atteint)
+-- - Gamification (badges, achievements)
+-- - Monitoring (détecter des anomalies)
+-- ============================================
+
