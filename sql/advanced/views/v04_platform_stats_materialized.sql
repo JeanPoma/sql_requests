@@ -1,0 +1,122 @@
+-- ============================================
+-- EXERCICE: Vue matérialisée (stats plateformes)
+-- NIVEAU: 🔴 Avancé - Vues
+-- CONCEPTS: MATERIALIZED VIEW, performance, rafraîchissement
+--
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE MATERIALIZED VIEW](https://www.postgresql.org/docs/current/sql-creatematerializedview.html)
+-- - [REFRESH MATERIALIZED VIEW](https://www.postgresql.org/docs/current/sql-refreshmaterializedview.html)
+--
+-- 🎯 OBJECTIF PÉDAGOGIQUE:
+-- Découvrir les vues matérialisées natives de PostgreSQL qui
+-- stockent physiquement les résultats pour améliorer les performances.
+--
+-- 💡 QU'EST-CE QU'UNE VUE MATÉRIALISÉE ?
+-- Contrairement aux vues classiques, une vue matérialisée:
+-- - STOCKE les données physiquement (comme une table)
+-- - Améliore les performances (pas de recalcul à chaque SELECT)
+-- - Nécessite un rafraîchissement périodique (REFRESH)
+--
+-- 📊 Vue classique vs Vue matérialisée:
+-- Vue classique (VIEW):
+--   ✅ Toujours à jour
+--   ✅ Pas d'espace disque
+--   ❌ Recalcul à chaque SELECT (lent)
+--
+-- Vue matérialisée (MATERIALIZED VIEW):
+--   ✅ Très rapide (données stockées)
+--   ✅ Peut avoir des index
+--   ❌ Nécessite REFRESH pour mise à jour
+--   ❌ Occupe de l'espace disque
+--
+-- ⚠️ PostgreSQL vs MariaDB:
+-- PostgreSQL a des vues matérialisées NATIVES (facile!)
+-- MariaDB nécessite simulation avec table + triggers (complexe)
+--
+-- ============================================
+-- CONSIGNE:
+-- Créez une vue matérialisée 'view_platform_stats' avec stats par plateforme.
+--
+-- Colonnes:
+-- - platform_code (VARCHAR) : code de la plateforme
+-- - total_games (INT) : nombre de jeux
+-- - avg_score (DECIMAL) : score moyen arrondi à 2 décimales
+-- - best_game (VARCHAR) : nom du meilleur jeu
+-- - best_score (INT) : score du meilleur jeu
+--
+-- Ordre:
+-- - Par total_games DESC (plateformes avec le plus de jeux)
+--
+-- 💡 SYNTAXE POSTGRESQL:
+-- CREATE MATERIALIZED VIEW view_platform_stats AS
+-- SELECT
+--     p.code AS platform_code,
+--     COUNT(*) AS total_games,
+--     ROUND(AVG(g.metacritic), 2) AS avg_score,
+--     (SELECT g2.name
+--      FROM games g2
+--      JOIN game_platforms gp2 ON g2.id = gp2.game_id
+--      WHERE gp2.platform_id = p.id AND g2.metacritic IS NOT NULL
+--      ORDER BY g2.metacritic DESC
+--      LIMIT 1) AS best_game,
+--     MAX(g.metacritic) AS best_score
+-- FROM platforms p
+-- JOIN game_platforms gp ON p.id = gp.platform_id
+-- JOIN games g ON gp.game_id = g.id
+-- WHERE g.metacritic IS NOT NULL
+-- GROUP BY p.id, p.code
+-- ORDER BY total_games DESC;
+--
+-- 💡 UTILISATION:
+-- -- Créer la vue
+-- CREATE MATERIALIZED VIEW view_platform_stats AS ...
+--
+-- -- Utiliser comme une table normale (très rapide)
+-- SELECT * FROM view_platform_stats WHERE total_games > 100;
+--
+-- -- Rafraîchir les données
+-- REFRESH MATERIALIZED VIEW view_platform_stats;
+--
+-- -- Rafraîchir sans bloquer les lectures (avec index UNIQUE)
+-- REFRESH MATERIALIZED VIEW CONCURRENTLY view_platform_stats;
+--
+-- 💡 INDEX sur vues matérialisées:
+-- CREATE UNIQUE INDEX idx_platform_stats_code
+-- ON view_platform_stats(platform_code);
+--
+-- Cet index permet:
+-- 1. REFRESH CONCURRENTLY (sans bloquer)
+-- 2. Recherches rapides par platform_code
+--
+-- 💡 QUAND UTILISER ?
+-- ✅ Requêtes complexes exécutées fréquemment
+-- ✅ Données qui changent peu souvent
+-- ✅ Dashboards, rapports, analytics
+-- ❌ Données temps réel (préférer vue classique)
+-- ❌ Requêtes simples déjà rapides
+--
+-- 💡 STRATÉGIES DE RAFRAÎCHISSEMENT:
+-- 1. Manuel: REFRESH MATERIALIZED VIEW (bloquant)
+-- 2. Concurrentiel: REFRESH MATERIALIZED VIEW CONCURRENTLY (non bloquant)
+-- 3. Périodique: Cron job PostgreSQL (pg_cron)
+-- 4. Trigger: REFRESH après INSERT/UPDATE (coûteux)
+--
+-- 💡 AVANTAGES POSTGRESQL:
+-- - Syntaxe simple et native
+-- - Pas besoin de triggers complexes
+-- - Support des index
+-- - REFRESH CONCURRENTLY
+-- - Intégré dans l'optimiseur de requêtes
+--
+-- 💡 ALTERNATIVE avec pg_cron:
+-- -- Installer pg_cron
+-- CREATE EXTENSION pg_cron;
+--
+-- -- Rafraîchir toutes les heures
+-- SELECT cron.schedule('refresh-platform-stats', '0 * * * *',
+--   \$\$REFRESH MATERIALIZED VIEW CONCURRENTLY view_platform_stats\$\$);
+--
+-- 💡 SUPPRIMER:
+-- DROP MATERIALIZED VIEW IF EXISTS view_platform_stats;
+-- ============================================
+

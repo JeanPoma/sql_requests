@@ -3,9 +3,9 @@
 -- NIVEAU: 🔴 Avancé - Vues
 -- CONCEPTS: CREATE VIEW, agrégations, jointures
 --
--- 📚 Documentation MariaDB :
--- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
--- - [Views Overview](https://mariadb.com/kb/en/views/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE VIEW](https://www.postgresql.org/docs/current/sql-createview.html)
+-- - [Views Overview](https://www.postgresql.org/docs/current/tutorial-views.html)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Apprendre à créer une vue qui encapsule une requête complexe

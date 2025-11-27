@@ -3,8 +3,8 @@
 -- NIVEAU: 🔴 Avancé - Vues
 -- CONCEPTS: Composition de vues, réutilisabilité
 --
--- 📚 Documentation MariaDB :
--- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE VIEW](https://www.postgresql.org/docs/current/sql-createview.html)
 -- - [View Algorithms](https://mariadb.com/kb/en/view-algorithms/)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:

@@ -3,8 +3,8 @@
 -- NIVEAU: 🔴 Avancé - Vues
 -- CONCEPTS: Vues updatables, limitations
 --
--- 📚 Documentation MariaDB :
--- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE VIEW](https://www.postgresql.org/docs/current/sql-createview.html)
 -- - [Updatable Views](https://mariadb.com/kb/en/inserting-and-updating-with-views/)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:

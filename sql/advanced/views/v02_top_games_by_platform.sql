@@ -3,8 +3,8 @@
 -- NIVEAU: 🔴 Avancé - Vues
 -- CONCEPTS: CREATE VIEW, RANK(), PARTITION BY
 --
--- 📚 Documentation MariaDB :
--- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE VIEW](https://www.postgresql.org/docs/current/sql-createview.html)
 -- - [Window Functions](https://mariadb.com/kb/en/window-functions/)
 -- - [RANK()](https://mariadb.com/kb/en/rank/)
 --

@@ -3,8 +3,8 @@
 -- NIVEAU: 🔴 Avancé - Vues
 -- CONCEPTS: CREATE VIEW, jointures multiples, dénormalisation
 --
--- 📚 Documentation MariaDB :
--- - [CREATE VIEW](https://mariadb.com/kb/en/create-view/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE VIEW](https://www.postgresql.org/docs/current/sql-createview.html)
 -- - [GROUP_CONCAT](https://mariadb.com/kb/en/group_concat/)
 -- - [LEFT JOIN](https://mariadb.com/kb/en/join-syntax/)
 --
