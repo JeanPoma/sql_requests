@@ -1,0 +1,66 @@
+name: Prevent Cross-Branch Pull Requests
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  check-branch-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if PR violates branch strategy
+        id: check
+        run: |
+          BASE_BRANCH="${{ github.base_ref }}"
+          HEAD_BRANCH="${{ github.head_ref }}"
+
+          echo "Base branch: $BASE_BRANCH"
+          echo "Head branch: $HEAD_BRANCH"
+
+          # Check for postgresql -> main
+          if [[ "$BASE_BRANCH" == "main" && "$HEAD_BRANCH" == "postgresql" ]]; then
+            echo "violation=true" >> $GITHUB_OUTPUT
+            echo "message=❌ **Pull Request Bloquée** : La branche \`postgresql\` ne peut pas être mergée dans \`main\`.|Ces branches représentent deux versions parallèles du projet (PostgreSQL vs MariaDB) et ne doivent pas être fusionnées.|Consultez \`.github/BRANCH_STRATEGY.md\` pour plus d'informations." >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check for main -> postgresql
+          if [[ "$BASE_BRANCH" == "postgresql" && "$HEAD_BRANCH" == "main" ]]; then
+            echo "violation=true" >> $GITHUB_OUTPUT
+            echo "message=❌ **Pull Request Bloquée** : La branche \`main\` ne peut pas être mergée dans \`postgresql\`.|Ces branches représentent deux versions parallèles du projet (MariaDB vs PostgreSQL) et ne doivent pas être fusionnées.|Consultez \`.github/BRANCH_STRATEGY.md\` pour plus d'informations." >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "violation=false" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR if violation detected
+        if: steps.check.outputs.violation == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const message = `${{ steps.check.outputs.message }}`.split('|').join('\n\n');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message + '\n\n---\n\n📚 **Ressources** :\n- [Stratégie de Branches](.github/BRANCH_STRATEGY.md)\n- [Guide MariaDB vs PostgreSQL](docs/MARIADB_VS_POSTGRESQL.md)\n\n🔄 **Action recommandée** : Fermez cette PR et créez une nouvelle PR ciblant la bonne branche de base.'
+            });
+
+      - name: Close PR if violation detected
+        if: steps.check.outputs.violation == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              state: 'closed'
+            });
+
+      - name: Fail workflow if violation detected
+        if: steps.check.outputs.violation == 'true'
+        run: |
+          echo "::error::Cette PR viole la stratégie de branches du repository"
+          exit 1
