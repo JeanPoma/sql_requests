@@ -1,25 +1,31 @@
 -- ============================================
 -- EXERCICE: Procédure avec gestion d'erreurs et transactions
 -- NIVEAU: 🔴 Avancé - Procédures Stockées
--- CONCEPTS: Transactions, HANDLER, ROLLBACK, validation
+-- CONCEPTS: Transactions, EXCEPTION, ROLLBACK, validation
 --
--- 📚 Documentation MariaDB :
--- - [Transactions](https://mariadb.com/kb/en/transactions/)
--- - [HANDLER](https://mariadb.com/kb/en/declare-handler/)
--- - [ROLLBACK](https://mariadb.com/kb/en/rollback/)
+-- 📚 Documentation PostgreSQL :
+-- - [Transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html)
+-- - [EXCEPTION](https://www.postgresql.org/docs/current/plpgsql-control-structures.html#PLPGSQL-ERROR-TRAPPING)
+-- - [ROLLBACK](https://www.postgresql.org/docs/current/sql-rollback.html)
+-- - [RAISE](https://www.postgresql.org/docs/current/plpgsql-errors-and-messages.html)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
--- Gérer les erreurs avec des HANDLER et utiliser des transactions
+-- Gérer les erreurs avec des blocs EXCEPTION et utiliser des transactions
 -- pour garantir l'intégrité des données.
 --
 -- 💡 TRANSACTIONS:
--- START TRANSACTION; -- Début
+-- BEGIN; -- Début (implicite dans les procédures)
 -- ... opérations ...
 -- COMMIT; -- Valider
 -- ROLLBACK; -- Annuler
 --
--- 💡 HANDLER FOR SQLEXCEPTION:
--- Capture toutes les erreurs SQL et permet de faire un rollback.
+-- 💡 EXCEPTION HANDLING:
+-- BEGIN
+--     -- code qui peut échouer
+-- EXCEPTION
+--     WHEN condition THEN
+--         -- gestion d'erreur
+-- END;
 --
 -- ============================================
 -- CONSIGNE:
@@ -31,8 +37,8 @@
 -- - IN game_name VARCHAR(255)
 -- - IN game_year INT
 -- - IN game_score INT
--- - OUT success BOOLEAN
--- - OUT error_msg VARCHAR(255)
+-- - INOUT success BOOLEAN
+-- - INOUT error_msg VARCHAR(255)
 --
 -- Validations:
 -- - year doit être entre 1970 et année courante
@@ -41,49 +47,79 @@
 -- En cas de succès: success = TRUE, error_msg = 'Insertion réussie'
 -- En cas d'erreur: success = FALSE, error_msg = description de l'erreur
 --
--- 💡 STRUCTURE:
--- DELIMITER //
--- CREATE PROCEDURE sp_insert_game_safe(
+-- 💡 SYNTAXE POSTGRESQL:
+-- CREATE OR REPLACE PROCEDURE sp_insert_game_safe(
 --     IN game_name VARCHAR(255),
 --     IN game_year INT,
 --     IN game_score INT,
---     OUT success BOOLEAN,
---     OUT error_msg VARCHAR(255)
+--     INOUT success BOOLEAN DEFAULT FALSE,
+--     INOUT error_msg VARCHAR(255) DEFAULT NULL
 -- )
+-- LANGUAGE plpgsql
+-- AS \$\$
 -- BEGIN
---     -- Handler pour les erreurs SQL
---     DECLARE EXIT HANDLER FOR SQLEXCEPTION
---     BEGIN
---         SET success = FALSE;
---         SET error_msg = 'Erreur SQL lors de l\'insertion';
---         ROLLBACK;
---     END;
---     
---     START TRANSACTION;
---     
 --     -- Validations
---     IF game_year < 1970 OR game_year > YEAR(CURDATE()) THEN
---         SET success = FALSE;
---         SET error_msg = 'Année invalide';
---     ELSEIF game_score < 0 OR game_score > 100 THEN
---         SET success = FALSE;
---         SET error_msg = 'Score invalide';
---     ELSE
---         -- Insertion
---         INSERT INTO games (name, year, metacritic) 
---         VALUES (game_name, game_year, game_score);
---         
---         SET success = TRUE;
---         SET error_msg = 'Insertion réussie';
---         COMMIT;
+--     IF game_year < 1970 OR game_year > EXTRACT(YEAR FROM CURRENT_DATE) THEN
+--         success := FALSE;
+--         error_msg := 'Année invalide';
+--         RETURN;
 --     END IF;
--- END //
--- DELIMITER ;
+--
+--     IF game_score < 0 OR game_score > 100 THEN
+--         success := FALSE;
+--         error_msg := 'Score invalide';
+--         RETURN;
+--     END IF;
+--
+--     -- Insertion (transaction implicite)
+--     BEGIN
+--         INSERT INTO games (name, year, metacritic)
+--         VALUES (game_name, game_year, game_score);
+--
+--         success := TRUE;
+--         error_msg := 'Insertion réussie';
+--     EXCEPTION
+--         WHEN OTHERS THEN
+--             success := FALSE;
+--             error_msg := 'Erreur SQL: ' || SQLERRM;
+--             -- ROLLBACK automatique en cas d'exception
+--     END;
+-- END;
+-- \$\$;
 --
 -- 💡 UTILISATION:
--- CALL sp_insert_game_safe('Test Game', 2023, 85, @ok, @msg);
--- SELECT @ok, @msg;
+-- CALL sp_insert_game_safe('Test Game', 2023, 85, NULL, NULL);
 --
--- CALL sp_insert_game_safe('Bad Year', 1800, 85, @ok, @msg);
--- SELECT @ok, @msg;  -- Devrait retourner FALSE
+-- CALL sp_insert_game_safe('Bad Year', 1800, 85, NULL, NULL);
+-- -- Devrait retourner success = FALSE
+--
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. EXCEPTION WHEN OTHERS au lieu de DECLARE EXIT HANDLER
+-- 2. SQLERRM pour le message d'erreur (au lieu de MESSAGE_TEXT)
+-- 3. EXTRACT(YEAR FROM CURRENT_DATE) au lieu de YEAR(CURDATE())
+-- 4. RETURN pour sortir immédiatement
+-- 5. ROLLBACK automatique en cas d'exception dans bloc BEGIN
+-- 6. || pour concaténation au lieu de CONCAT()
+--
+-- 💡 GESTION AVANCÉE DES ERREURS:
+-- PostgreSQL permet de capturer des erreurs spécifiques:
+--
+-- EXCEPTION
+--     WHEN unique_violation THEN
+--         error_msg := 'Ce jeu existe déjà';
+--     WHEN foreign_key_violation THEN
+--         error_msg := 'Référence invalide';
+--     WHEN check_violation THEN
+--         error_msg := 'Contrainte violée';
+--     WHEN OTHERS THEN
+--         error_msg := 'Erreur inconnue: ' || SQLERRM;
+-- END;
+--
+-- 💡 SAVEPOINTS pour transactions imbriquées:
+-- BEGIN
+--     SAVEPOINT my_savepoint;
+--     -- opérations risquées
+--     ROLLBACK TO my_savepoint;  -- Revenir au savepoint
+-- END;
 -- ============================================
+

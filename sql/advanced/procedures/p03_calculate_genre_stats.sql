@@ -3,9 +3,10 @@
 -- NIVEAU: 🔴 Avancé - Procédures Stockées
 -- CONCEPTS: CREATE PROCEDURE, OUT parameters, SELECT INTO
 --
--- 📚 Documentation MariaDB :
--- - [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/)
--- - [SELECT INTO](https://mariadb.com/kb/en/selectinto/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE PROCEDURE](https://www.postgresql.org/docs/current/sql-createprocedure.html)
+-- - [PL/pgSQL SELECT INTO](https://www.postgresql.org/docs/current/plpgsql-statements.html#PLPGSQL-STATEMENTS-SQL-ONEROW)
+-- - [INOUT Parameters](https://www.postgresql.org/docs/current/xfunc-sql.html#XFUNC-OUTPUT-PARAMETERS)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Utiliser des paramètres OUT pour retourner plusieurs valeurs
@@ -15,8 +16,10 @@
 -- Les paramètres OUT permettent de retourner des valeurs depuis
 -- la procédure vers l'appelant.
 --
--- Syntaxe: OUT nom_param TYPE
+-- Syntaxe PostgreSQL: OUT nom_param TYPE ou INOUT nom_param TYPE
 -- Utilisation: SELECT valeur INTO nom_param
+--
+-- ⚠️ DIFFÉRENCE: PostgreSQL préfère INOUT pour les procédures
 --
 -- ============================================
 -- CONSIGNE:
@@ -33,14 +36,15 @@
 -- Action:
 -- Calculer les 3 statistiques et les assigner aux paramètres OUT
 --
--- 💡 STRUCTURE:
--- DELIMITER //
--- CREATE PROCEDURE sp_calculate_genre_stats(
+-- 💡 SYNTAXE POSTGRESQL:
+-- CREATE OR REPLACE PROCEDURE sp_calculate_genre_stats(
 --     IN genre_name VARCHAR(100),
---     OUT total_games INT,
---     OUT avg_score DECIMAL(5,2),
---     OUT top_game VARCHAR(255)
+--     INOUT total_games INT DEFAULT NULL,
+--     INOUT avg_score DECIMAL(5,2) DEFAULT NULL,
+--     INOUT top_game VARCHAR(255) DEFAULT NULL
 -- )
+-- LANGUAGE plpgsql
+-- AS $$
 -- BEGIN
 --     -- Calculer total_games et avg_score
 --     SELECT COUNT(*), ROUND(AVG(g.metacritic), 2)
@@ -49,20 +53,67 @@
 --     JOIN game_genres gg ON g.id = gg.game_id
 --     JOIN genres gr ON gg.genre_id = gr.id
 --     WHERE gr.name = genre_name AND g.metacritic IS NOT NULL;
---     
+--
 --     -- Calculer top_game
 --     SELECT g.name INTO top_game
 --     FROM games g
 --     JOIN game_genres gg ON g.id = gg.game_id
 --     JOIN genres gr ON gg.genre_id = gr.id
 --     WHERE gr.name = genre_name
---     ORDER BY g.metacritic DESC
+--     ORDER BY g.metacritic DESC NULLS LAST
 --     LIMIT 1;
--- END //
--- DELIMITER ;
+-- END;
+-- $$;
 --
 -- 💡 UTILISATION:
--- CALL sp_calculate_genre_stats('Action', @total, @avg, @top);
--- SELECT @total, @avg, @top;
--- -- Affiche les 3 valeurs retournées
+-- CALL sp_calculate_genre_stats('Action', NULL, NULL, NULL);
+--
+-- -- Avec variables (dans psql):
+-- \set total 0
+-- \set avg 0
+-- \set top ''
+-- CALL sp_calculate_genre_stats('Action', :total, :avg, :top);
+--
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. INOUT au lieu de OUT pour les procédures
+-- 2. DEFAULT NULL pour initialiser les paramètres
+-- 3. := pour l'affectation (ou INTO)
+-- 4. NULLS LAST dans ORDER BY pour gérer les NULL
+-- 5. Pas de variables session @ (utiliser des variables locales ou INOUT)
+--
+-- 💡 ALTERNATIVE avec FUNCTION:
+-- Si vous préférez retourner un record:
+-- CREATE TYPE genre_stats AS (
+--     total_games INT,
+--     avg_score DECIMAL(5,2),
+--     top_game VARCHAR(255)
+-- );
+--
+-- CREATE OR REPLACE FUNCTION sp_calculate_genre_stats(genre_name VARCHAR)
+-- RETURNS genre_stats
+-- LANGUAGE plpgsql
+-- AS $$
+-- DECLARE
+--     result genre_stats;
+-- BEGIN
+--     SELECT COUNT(*), ROUND(AVG(g.metacritic), 2)
+--     INTO result.total_games, result.avg_score
+--     FROM games g
+--     JOIN game_genres gg ON g.id = gg.game_id
+--     JOIN genres gr ON gg.genre_id = gr.id
+--     WHERE gr.name = genre_name AND g.metacritic IS NOT NULL;
+--
+--     SELECT g.name INTO result.top_game
+--     FROM games g
+--     JOIN game_genres gg ON g.id = gg.game_id
+--     JOIN genres gr ON gg.genre_id = gr.id
+--     WHERE gr.name = genre_name
+--     ORDER BY g.metacritic DESC NULLS LAST
+--     LIMIT 1;
+--
+--     RETURN result;
+-- END;
+-- $$;
+-- -- Appel: SELECT * FROM sp_calculate_genre_stats('Action');
 -- ============================================
+

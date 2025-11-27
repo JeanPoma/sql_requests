@@ -1,29 +1,31 @@
 -- ============================================
 -- EXERCICE: Procédure avec logique conditionnelle
 -- NIVEAU: 🔴 Avancé - Procédures Stockées
--- CONCEPTS: IF/ELSEIF/ELSE, DECLARE, variables locales
+-- CONCEPTS: IF/ELSIF/ELSE, DECLARE, variables locales
 --
--- 📚 Documentation MariaDB :
--- - [IF Statement](https://mariadb.com/kb/en/if/)
--- - [DECLARE](https://mariadb.com/kb/en/declare-variable/)
+-- 📚 Documentation PostgreSQL :
+-- - [IF Statement](https://www.postgresql.org/docs/current/plpgsql-control-structures.html#PLPGSQL-CONDITIONALS)
+-- - [DECLARE Variables](https://www.postgresql.org/docs/current/plpgsql-declarations.html)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
--- Utiliser des structures conditionnelles (IF/ELSEIF/ELSE)
+-- Utiliser des structures conditionnelles (IF/ELSIF/ELSE)
 -- et des variables locales dans une procédure.
 --
 -- 💡 VARIABLES LOCALES:
 -- DECLARE nom_variable TYPE;
--- SET nom_variable = valeur;
+-- nom_variable := valeur;
 -- SELECT colonne INTO nom_variable FROM ...;
 --
 -- 💡 STRUCTURE IF:
 -- IF condition THEN
 --     instructions
--- ELSEIF condition THEN
+-- ELSIF condition THEN
 --     instructions
 -- ELSE
 --     instructions
 -- END IF;
+--
+-- ⚠️ ATTENTION: ELSIF (pas ELSEIF comme en MariaDB)
 --
 -- ============================================
 -- CONSIGNE:
@@ -33,7 +35,7 @@
 -- Nom: sp_classify_game
 -- Paramètres:
 -- - IN game_id INT : ID du jeu à classifier
--- - OUT classification VARCHAR(50) : classification du jeu
+-- - INOUT classification VARCHAR(50) : classification du jeu
 --
 -- Classifications:
 -- - NULL → 'Non noté'
@@ -43,38 +45,69 @@
 -- - >= 60 → 'Moyen'
 -- - < 60 → 'Faible'
 --
--- 💡 STRUCTURE:
--- DELIMITER //
--- CREATE PROCEDURE sp_classify_game(
+-- 💡 SYNTAXE POSTGRESQL:
+-- CREATE OR REPLACE PROCEDURE sp_classify_game(
 --     IN game_id INT,
---     OUT classification VARCHAR(50)
+--     INOUT classification VARCHAR(50) DEFAULT NULL
 -- )
+-- LANGUAGE plpgsql
+-- AS $$
+-- DECLARE
+--     score INT;
 -- BEGIN
---     DECLARE score INT;
---     
 --     -- Récupérer le score
---     SELECT metacritic INTO score 
---     FROM games 
+--     SELECT metacritic INTO score
+--     FROM games
 --     WHERE id = game_id;
---     
+--
 --     -- Classifier
 --     IF score IS NULL THEN
---         SET classification = 'Non noté';
---     ELSEIF score >= 90 THEN
---         SET classification = 'Chef-d\'œuvre';
---     ELSEIF score >= 80 THEN
---         SET classification = 'Excellent';
---     ELSEIF score >= 70 THEN
---         SET classification = 'Bon';
---     ELSEIF score >= 60 THEN
---         SET classification = 'Moyen';
+--         classification := 'Non noté';
+--     ELSIF score >= 90 THEN
+--         classification := 'Chef-d''œuvre';
+--     ELSIF score >= 80 THEN
+--         classification := 'Excellent';
+--     ELSIF score >= 70 THEN
+--         classification := 'Bon';
+--     ELSIF score >= 60 THEN
+--         classification := 'Moyen';
 --     ELSE
---         SET classification = 'Faible';
+--         classification := 'Faible';
 --     END IF;
--- END //
--- DELIMITER ;
+-- END;
+-- $$;
 --
 -- 💡 UTILISATION:
--- CALL sp_classify_game(123, @class);
--- SELECT @class;
+-- CALL sp_classify_game(123, NULL);
+--
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. ELSIF au lieu de ELSEIF (attention à l'orthographe !)
+-- 2. := pour l'affectation au lieu de SET
+-- 3. DECLARE avant BEGIN (ordre strict)
+-- 4. '' pour échapper les quotes (Chef-d''œuvre)
+-- 5. INOUT au lieu de OUT pour les procédures
+--
+-- 💡 ALTERNATIVE avec CASE:
+-- CREATE OR REPLACE PROCEDURE sp_classify_game(
+--     IN game_id INT,
+--     INOUT classification VARCHAR(50) DEFAULT NULL
+-- )
+-- LANGUAGE plpgsql
+-- AS $$
+-- DECLARE
+--     score INT;
+-- BEGIN
+--     SELECT metacritic INTO score FROM games WHERE id = game_id;
+--
+--     classification := CASE
+--         WHEN score IS NULL THEN 'Non noté'
+--         WHEN score >= 90 THEN 'Chef-d''œuvre'
+--         WHEN score >= 80 THEN 'Excellent'
+--         WHEN score >= 70 THEN 'Bon'
+--         WHEN score >= 60 THEN 'Moyen'
+--         ELSE 'Faible'
+--     END;
+-- END;
+-- $$;
 -- ============================================
+

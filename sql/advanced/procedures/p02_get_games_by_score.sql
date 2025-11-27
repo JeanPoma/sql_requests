@@ -1,30 +1,37 @@
 -- ============================================
 -- EXERCICE: Procédure avec paramètre IN
 -- NIVEAU: 🔴 Avancé - Procédures Stockées
--- CONCEPTS: CREATE PROCEDURE, IN parameters, dynamic queries
+-- CONCEPTS: CREATE FUNCTION, IN parameters, RETURNS TABLE
 --
--- 📚 Documentation MariaDB :
--- - [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/)
--- - [Procedure Parameters](https://mariadb.com/kb/en/create-procedure/#parameters)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE FUNCTION](https://www.postgresql.org/docs/current/sql-createfunction.html)
+-- - [Function Parameters](https://www.postgresql.org/docs/current/xfunc-sql.html)
+-- - [RETURNS TABLE](https://www.postgresql.org/docs/current/sql-createfunction.html#SQL-CREATEFUNCTION-EXAMPLES)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
--- Apprendre à créer une procédure avec des paramètres d'entrée (IN)
+-- Apprendre à créer une fonction avec des paramètres d'entrée (IN)
 -- pour rendre le code réutilisable avec différentes valeurs.
 --
 -- 💡 PARAMÈTRES IN:
--- Les paramètres IN permettent de passer des valeurs à la procédure.
--- Syntaxe: IN nom_param TYPE
+-- Les paramètres IN permettent de passer des valeurs à la fonction.
+-- Syntaxe: nom_param TYPE (IN est implicite)
 --
--- Exemple: IN min_score INT
+-- Exemple: min_score INT
+--
+-- ⚠️ PROCEDURE vs FUNCTION en PostgreSQL:
+-- - PROCEDURE : Pour opérations sans résultat (INSERT, UPDATE, DELETE)
+-- - FUNCTION : Pour opérations avec résultat (SELECT)
+--
+-- Pour retourner un résultat SELECT, on utilise FUNCTION RETURNS TABLE.
 --
 -- ============================================
 -- CONSIGNE:
--- Créez une procédure 'sp_get_games_by_score' qui recherche des jeux
+-- Créez une fonction 'sp_get_games_by_score' qui recherche des jeux
 -- selon un score minimum fourni en paramètre.
 --
 -- Nom: sp_get_games_by_score
 -- Paramètres:
--- - IN min_score INT : score minimum Metacritic
+-- - min_score INT : score minimum Metacritic
 --
 -- Action:
 -- Retourner les 20 meilleurs jeux avec metacritic >= min_score
@@ -33,23 +40,52 @@
 -- Ordre: metacritic DESC
 -- Limite: 20
 --
--- 💡 SYNTAXE:
--- DELIMITER //
--- CREATE PROCEDURE sp_get_games_by_score(IN min_score INT)
+-- 💡 SYNTAXE POSTGRESQL:
+-- CREATE OR REPLACE FUNCTION sp_get_games_by_score(min_score INT)
+-- RETURNS TABLE(name VARCHAR, year SMALLINT, metacritic SMALLINT)
+-- LANGUAGE plpgsql
+-- AS $$
 -- BEGIN
+--     RETURN QUERY
+--     SELECT g.name, g.year, g.metacritic
+--     FROM games g
+--     WHERE g.metacritic >= min_score
+--     ORDER BY g.metacritic DESC
+--     LIMIT 20;
+-- END;
+-- $$;
+--
+-- 💡 UTILISATION:
+-- SELECT * FROM sp_get_games_by_score(90);  -- Jeux avec score >= 90
+-- SELECT * FROM sp_get_games_by_score(80);  -- Jeux avec score >= 80
+--
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. CREATE FUNCTION au lieu de CREATE PROCEDURE (pour retourner résultats)
+-- 2. RETURNS TABLE(...) pour définir les colonnes retournées
+-- 3. RETURN QUERY avant le SELECT
+-- 4. Appel avec SELECT FROM au lieu de CALL
+-- 5. $$ au lieu de DELIMITER //
+--
+-- 💡 POURQUOI C'EST UTILE ?
+-- Au lieu de réécrire la requête à chaque fois, on appelle
+-- simplement la fonction avec le paramètre souhaité.
+--
+-- 💡 ALTERNATIVE avec PROCEDURE + REFCURSOR (plus complexe):
+-- CREATE OR REPLACE PROCEDURE sp_get_games_by_score(
+--     min_score INT,
+--     INOUT result REFCURSOR
+-- )
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     OPEN result FOR
 --     SELECT name, year, metacritic
 --     FROM games
 --     WHERE metacritic >= min_score
 --     ORDER BY metacritic DESC
 --     LIMIT 20;
--- END //
--- DELIMITER ;
---
--- 💡 UTILISATION:
--- CALL sp_get_games_by_score(90);  -- Jeux avec score >= 90
--- CALL sp_get_games_by_score(80);  -- Jeux avec score >= 80
---
--- 💡 POURQUOI C'EST UTILE ?
--- Au lieu de réécrire la requête à chaque fois, on appelle
--- simplement la procédure avec le paramètre souhaité.
+-- END;
+-- $$;
+-- -- Appel: CALL sp_get_games_by_score(90, 'cur'); FETCH ALL FROM cur;
 -- ============================================
+

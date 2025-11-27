@@ -1,12 +1,12 @@
 -- ============================================
 -- EXERCICE: Procédure avec curseur (LOOP)
 -- NIVEAU: 🔴 Avancé - Procédures Stockées
--- CONCEPTS: CURSOR, LOOP, HANDLER
+-- CONCEPTS: CURSOR, LOOP, EXCEPTION
 --
--- 📚 Documentation MariaDB :
--- - [CURSOR](https://mariadb.com/kb/en/cursor-overview/)
--- - [LOOP](https://mariadb.com/kb/en/loop/)
--- - [Handlers](https://mariadb.com/kb/en/declare-handler/)
+-- 📚 Documentation PostgreSQL :
+-- - [CURSOR](https://www.postgresql.org/docs/current/plpgsql-cursors.html)
+-- - [LOOP](https://www.postgresql.org/docs/current/plpgsql-control-structures.html#PLPGSQL-CONTROL-STRUCTURES-LOOPS)
+-- - [EXCEPTION](https://www.postgresql.org/docs/current/plpgsql-control-structures.html#PLPGSQL-STATEMENTS-EXIT)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Utiliser un curseur pour parcourir un ensemble de résultats
@@ -17,11 +17,11 @@
 -- une ligne à la fois, comme une boucle for.
 --
 -- Étapes:
--- 1. DECLARE CURSOR FOR SELECT ...
--- 2. DECLARE CONTINUE HANDLER FOR NOT FOUND
--- 3. OPEN cursor
--- 4. LOOP + FETCH
--- 5. CLOSE cursor
+-- 1. DECLARE cursor_name CURSOR FOR SELECT ...
+-- 2. OPEN cursor (optionnel en PostgreSQL si déclaré avec FOR)
+-- 3. LOOP + FETCH
+-- 4. EXIT WHEN NOT FOUND
+-- 5. CLOSE cursor (optionnel, fait automatiquement)
 --
 -- ============================================
 -- CONSIGNE:
@@ -35,49 +35,73 @@
 -- Parcourir tous les jeux avec metacritic NOT NULL
 -- (Dans cet exercice, on ne fait qu'un parcours de démonstration)
 --
--- Retour: SELECT 'Categories updated' AS result;
+-- Retour: RAISE NOTICE avec message 'Categories updated'
 --
--- 💡 STRUCTURE:
--- DELIMITER //
--- CREATE PROCEDURE sp_update_game_categories()
--- BEGIN
---     DECLARE done INT DEFAULT FALSE;
---     DECLARE gid INT;
---     DECLARE score INT;
---     
---     -- Définir le curseur
---     DECLARE cur CURSOR FOR 
---         SELECT id, metacritic 
---         FROM games 
---         WHERE metacritic IS NOT NULL 
+-- 💡 SYNTAXE POSTGRESQL:
+-- CREATE OR REPLACE PROCEDURE sp_update_game_categories()
+-- LANGUAGE plpgsql
+-- AS \$\$
+-- DECLARE
+--     gid INT;
+--     score INT;
+--     game_cursor CURSOR FOR
+--         SELECT id, metacritic
+--         FROM games
+--         WHERE metacritic IS NOT NULL
 --         LIMIT 100;  -- Limiter pour la démo
---     
---     -- Handler pour fin de curseur
---     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
---     
---     OPEN cur;
---     
---     read_loop: LOOP
---         FETCH cur INTO gid, score;
---         IF done THEN
---             LEAVE read_loop;
---         END IF;
---         
+-- BEGIN
+--     OPEN game_cursor;
+--
+--     LOOP
+--         FETCH game_cursor INTO gid, score;
+--         EXIT WHEN NOT FOUND;
+--
 --         -- Traitement sur chaque jeu
 --         -- (ici on ne fait rien, c'est juste une démo)
---         
+--
 --     END LOOP;
---     
---     CLOSE cur;
---     SELECT 'Categories updated' AS result;
--- END //
--- DELIMITER ;
+--
+--     CLOSE game_cursor;
+--     RAISE NOTICE 'Categories updated';
+-- END;
+-- \$\$;
 --
 -- 💡 UTILISATION:
 -- CALL sp_update_game_categories();
+--
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. EXIT WHEN NOT FOUND au lieu de IF done THEN LEAVE
+-- 2. Pas besoin de DECLARE CONTINUE HANDLER FOR NOT FOUND
+-- 3. FETCH cursor INTO au lieu de FETCH cur INTO
+-- 4. RAISE NOTICE au lieu de SELECT pour afficher
+-- 5. Syntaxe plus simple et plus lisible
+--
+-- 💡 ALTERNATIVE avec FOR IN:
+-- PostgreSQL permet une syntaxe plus concise avec FOR IN:
+--
+-- CREATE OR REPLACE PROCEDURE sp_update_game_categories()
+-- LANGUAGE plpgsql
+-- AS \$\$
+-- DECLARE
+--     game_record RECORD;
+-- BEGIN
+--     FOR game_record IN
+--         SELECT id, metacritic
+--         FROM games
+--         WHERE metacritic IS NOT NULL
+--         LIMIT 100
+--     LOOP
+--         -- Traitement sur game_record.id, game_record.metacritic
+--         -- (ici on ne fait rien, c'est juste une démo)
+--     END LOOP;
+--
+--     RAISE NOTICE 'Categories updated';
+-- END;
+-- \$\$;
 --
 -- 💡 QUAND UTILISER UN CURSEUR ?
 -- - Rarement ! Les curseurs sont lents.
 -- - Préférez les opérations ensemblistes (UPDATE WHERE ...)
 -- - Utile uniquement pour logique complexe ligne par ligne
 -- ============================================
+
