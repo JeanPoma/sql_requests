@@ -1,9 +1,10 @@
-# 🎮 Cours SQL + TDD (MariaDB + Python) — Dataset RAWG (Kaggle)
+# 🎮 Cours SQL + TDD (PostgreSQL + Python) — Dataset RAWG (Kaggle)
 
 Ce projet propose une progression TDD pour apprendre SQL avec des **données réelles** (dataset RAWG par jummyegg).
 
 ## 📑 Table des matières
 
+- [🗄️ Choisir votre SGBD](#️-choisir-votre-sgbd)
 - [🎯 Objectifs](#-objectifs)
 - [🎓 Parcours d'apprentissage](#-parcours-dapprentissage)
 - [📚 Avant de commencer](#-avant-de-commencer)
@@ -14,6 +15,40 @@ Ce projet propose une progression TDD pour apprendre SQL avec des **données ré
 - [💡 Conseils pédagogiques](#-conseils-pédagogiques)
 - [🔧 Dépannage](#-dépannage)
 - [📄 Licence & Données](#-licence--données)
+
+---
+
+## 🗄️ Choisir votre SGBD
+
+Ce projet est disponible en **deux versions** pour s'adapter à différents contextes professionnels :
+
+### 🟣 Version PostgreSQL (branche actuelle : `postgres`)
+**Pour qui ?** Data Scientists, Data Analysts, applications avancées
+- ✅ Syntaxe PostgreSQL + PL/pgSQL
+- ✅ Fonctionnalités analytiques avancées
+- ✅ Standard dans les environnements data science
+- ✅ Vues matérialisées natives, meilleurs types de données
+
+### 🔵 Version MariaDB (branche : `main`)
+**Pour qui ?** Développeurs web, applications classiques
+- ✅ Syntaxe MariaDB/MySQL (la plus répandue)
+- ✅ Compatible avec la majorité des stacks web
+- ✅ Excellente performance pour applications OLTP
+
+### 🔄 Comment changer de version ?
+
+```bash
+# Passer à la version MariaDB
+git fetch origin main
+git checkout main
+
+# Revenir à la version PostgreSQL
+git checkout postgres
+```
+
+**📖 Documentation** : Consultez également le fichier `README_POSTGRES.md` pour des informations détaillées sur les spécificités PostgreSQL et `docs/MARIADB_VS_POSTGRESQL.md` pour un guide comparatif.
+
+**💡 Note** : Les deux versions contiennent exactement les **mêmes 38 exercices** (q00-q20 + 18 exercices avancés), seule la syntaxe SQL diffère.
 
 ---
 
@@ -89,36 +124,36 @@ Création de vues pour simplifier les requêtes complexes et encapsuler la logiq
 
 | Exercice | Concepts clés | Documentation |
 |----------|---------------|---------------|
-| **v01** | Vue simple avec agrégation | [CREATE VIEW](https://mariadb.com/kb/en/create-view/) |
-| **v02** | Vue avec jointures | [Views Overview](https://mariadb.com/kb/en/views/) |
-| **v03** | Vue avec filtre paramétrable | [View Algorithms](https://mariadb.com/kb/en/view-algorithms/) |
-| **v04** | Vue matérialisée (simulation) | [Materialized Views](https://mariadb.com/kb/en/views/) |
-| **v05** | Vue avec UNION | [CREATE VIEW](https://mariadb.com/kb/en/create-view/) |
-| **v06** | Vue basique (games) | [Views](https://mariadb.com/kb/en/views/) |
+| **v01** | Vue simple avec agrégation | [CREATE VIEW](https://www.postgresql.org/docs/current/sql-createview.html) |
+| **v02** | Vue avec jointures | [Views Overview](https://www.postgresql.org/docs/current/tutorial-views.html) |
+| **v03** | Vue avec filtre paramétrable | [Rules and Views](https://www.postgresql.org/docs/current/rules-views.html) |
+| **v04** | Vue matérialisée native | [Materialized Views](https://www.postgresql.org/docs/current/sql-creatematerializedview.html) |
+| **v05** | Vue avec UNION | [CREATE VIEW](https://www.postgresql.org/docs/current/sql-createview.html) |
+| **v06** | Vue basique (games) | [Views](https://www.postgresql.org/docs/current/tutorial-views.html) |
 
 #### 🔧 **Procédures Stockées (Stored Procedures)**
 Création de procédures pour automatiser des traitements et centraliser la logique.
 
 | Exercice | Concepts clés | Documentation |
 |----------|---------------|---------------|
-| **p01** | Procédure simple sans paramètres | [CREATE PROCEDURE](https://mariadb.com/kb/en/create-procedure/) |
-| **p02** | Procédure avec IN parameter | [Procedure Parameters](https://mariadb.com/kb/en/create-procedure/#parameters) |
-| **p03** | Procédure avec OUT parameters | [SELECT INTO](https://mariadb.com/kb/en/selectinto/) |
-| **p04** | Logique conditionnelle (IF/ELSE) | [IF Statement](https://mariadb.com/kb/en/if/) |
-| **p05** | Curseur (LOOP) | [CURSOR](https://mariadb.com/kb/en/cursor-overview/) |
-| **p06** | Transactions et gestion d'erreurs | [Transactions](https://mariadb.com/kb/en/transactions/) |
+| **p01** | Procédure simple sans paramètres | [CREATE PROCEDURE](https://www.postgresql.org/docs/current/sql-createprocedure.html) |
+| **p02** | Fonction avec RETURNS TABLE | [CREATE FUNCTION](https://www.postgresql.org/docs/current/sql-createfunction.html) |
+| **p03** | Procédure avec INOUT parameters | [PL/pgSQL Parameters](https://www.postgresql.org/docs/current/plpgsql-declarations.html) |
+| **p04** | Logique conditionnelle (IF/ELSIF) | [PL/pgSQL Control Structures](https://www.postgresql.org/docs/current/plpgsql-control-structures.html) |
+| **p05** | Curseur et boucles | [PL/pgSQL Cursors](https://www.postgresql.org/docs/current/plpgsql-cursors.html) |
+| **p06** | Transactions et gestion d'erreurs | [Exception Handling](https://www.postgresql.org/docs/current/plpgsql-control-structures.html#PLPGSQL-ERROR-TRAPPING) |
 
 #### ⚡ **Triggers (Déclencheurs)**
 Création de triggers pour automatiser des actions en réponse à des événements.
 
 | Exercice | Concepts clés | Documentation |
 |----------|---------------|---------------|
-| **t01** | BEFORE INSERT avec validation | [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/) |
-| **t02** | AFTER INSERT pour audit log | [Trigger Overview](https://mariadb.com/kb/en/triggers/) |
-| **t03** | BEFORE UPDATE avec historique | [Trigger OLD/NEW](https://mariadb.com/kb/en/trigger-overview/#old-and-new) |
-| **t04** | AFTER UPDATE pour notifications | [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/) |
-| **t05** | BEFORE DELETE avec protection | [SIGNAL](https://mariadb.com/kb/en/signal/) |
-| **t06** | Maintenance de vue matérialisée | [INSERT ON DUPLICATE KEY](https://mariadb.com/kb/en/insert-on-duplicate-key-update/) |
+| **t01** | BEFORE INSERT avec validation | [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html) |
+| **t02** | AFTER INSERT pour audit log | [Trigger Overview](https://www.postgresql.org/docs/current/triggers.html) |
+| **t03** | BEFORE UPDATE avec historique | [Trigger Functions](https://www.postgresql.org/docs/current/plpgsql-trigger.html) |
+| **t04** | AFTER UPDATE pour notifications | [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html) |
+| **t05** | BEFORE DELETE avec protection | [RAISE EXCEPTION](https://www.postgresql.org/docs/current/plpgsql-errors-and-messages.html) |
+| **t06** | Maintenance de vue matérialisée | [INSERT ON CONFLICT](https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFLICT) |
 
 **📍 Emplacement** : Les exercices du module avancé sont dans `sql/advanced/` :
 - `sql/advanced/views/` : Exercices sur les vues (v01-v06)
@@ -199,7 +234,7 @@ LIMIT 10;
 
 1. **Démarrer la base de données et Adminer**
    ```bash
-   docker compose up -d mariadb
+   docker compose up -d postgres
    docker compose up -d adminer
    ```
 
@@ -208,7 +243,7 @@ LIMIT 10;
    docker compose run -d --name vg-app app bash -lc "pip install -r requirements.txt && tail -f /dev/null"
    ```
 
-3. **Charger le dataset dans MariaDB**
+3. **Charger le dataset dans PostgreSQL**
    ```bash
    docker exec -it vg-app python scripts/load_rawg_csv.py
    ```
@@ -268,8 +303,8 @@ LIMIT 10;
 ### Accès
 1. Ouvrez votre navigateur : **http://localhost:8080**
 2. Connectez-vous avec :
-   - **Système** : MySQL
-   - **Serveur** : mariadb
+   - **Système** : PostgreSQL
+   - **Serveur** : postgres
    - **Utilisateur** : root
    - **Mot de passe** : rootpwd
    - **Base de données** : vg
@@ -374,7 +409,7 @@ Ce fichier contient :
 - **Fenêtres** : Maîtrisez LEAD/LAG, RANK, DENSE_RANK
 - **Optimisation** : Utilisez EXPLAIN pour analyser vos requêtes
 - **CTEs** : Décomposez les requêtes complexes en sous-requêtes nommées
-- **Index** : Comprenez comment MariaDB utilise les index
+- **Index** : Comprenez comment PostgreSQL utilise les index et le query planner
 
 ---
 
@@ -385,12 +420,13 @@ Ce fichier contient :
 - Relancez le script : `docker exec -it vg-app python scripts/load_rawg_csv.py`
 
 ### Les tests de fenêtres échouent
-- Assurez-vous d'utiliser **MariaDB ≥ 10.5**
-- Vérifiez avec : `docker exec -it mariadb mysql --version`
+- Assurez-vous d'utiliser **PostgreSQL ≥ 14**
+- Vérifiez avec : `docker exec -it postgres psql --version`
 
 ### EXPLAIN n'utilise pas l'index
 - Rendez la clause WHERE plus sélective
-- Vérifiez que l'index existe : `SHOW INDEX FROM games;`
+- Vérifiez que l'index existe : `SELECT * FROM pg_indexes WHERE tablename = 'games';`
+- Analysez le query plan : `EXPLAIN ANALYZE SELECT ...`
 
 ### Erreur de connexion Docker
 - Vérifiez que les conteneurs tournent : `docker compose ps`
@@ -399,7 +435,7 @@ Ce fichier contient :
 ### Réinitialiser complètement le projet
 ```bash
 docker compose down -v
-docker compose up -d mariadb adminer
+docker compose up -d postgres adminer
 # Puis refaire les étapes d'installation
 ```
 
