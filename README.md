@@ -28,7 +28,7 @@ Ce projet est disponible en **deux versions** pour s'adapter à différents cont
 - ✅ Compatible avec la majorité des stacks web
 - ✅ Excellente performance pour applications OLTP
 
-### 🟣 Version PostgreSQL (branche : `postgres`)
+### 🟣 Version PostgreSQL (branche : `postgresql`)
 **Pour qui ?** Data Scientists, Data Analysts, applications avancées
 - ✅ Syntaxe PostgreSQL + PL/pgSQL
 - ✅ Fonctionnalités analytiques avancées
@@ -39,14 +39,14 @@ Ce projet est disponible en **deux versions** pour s'adapter à différents cont
 
 ```bash
 # Passer à la version PostgreSQL
-git fetch origin postgres
-git checkout postgres
+git fetch origin postgresql
+git checkout postgresql
 
 # Revenir à la version MariaDB
 git checkout main
 ```
 
-**📖 Documentation complète PostgreSQL** : Une fois sur la branche `postgres`, consultez le fichier `README_POSTGRES.md` pour des instructions spécifiques.
+**📖 Documentation complète PostgreSQL** : Une fois sur la branche `postgresql`, consultez le fichier `README_POSTGRES.md` pour des instructions spécifiques.
 
 **💡 Note** : Les deux versions contiennent exactement les **mêmes 38 exercices** (q00-q20 + 18 exercices avancés), seule la syntaxe SQL diffère.
 

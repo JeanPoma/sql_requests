@@ -10,7 +10,7 @@ Ce repository utilise une **architecture multi-branches** pour supporter deux sy
 - **Syntaxe** : MariaDB/MySQL
 - **Driver Python** : pymysql
 
-### 🟣 Branche `postgres` - Version PostgreSQL
+### 🟣 Branche `postgresql` - Version PostgreSQL
 - **SGBD** : PostgreSQL 16
 - **Public cible** : Data Scientists, Data Analysts, applications avancées
 - **Syntaxe** : PostgreSQL + PL/pgSQL
@@ -20,7 +20,7 @@ Ce repository utilise une **architecture multi-branches** pour supporter deux sy
 
 ### ❌ PAS de Merge Entre Branches Principales
 
-**Les branches `main` et `postgres` ne doivent JAMAIS être mergées l'une dans l'autre.**
+**Les branches `main` et `postgresql` ne doivent JAMAIS être mergées l'une dans l'autre.**
 
 Ces branches représentent deux versions **parallèles** du même projet, adaptées à des SGBD différents. Elles évoluent indépendamment.
 
@@ -40,8 +40,8 @@ git commit -m "feat: my feature"
 git checkout main
 git merge feature/my-feature
 
-# 4. Cherry-pick dans postgres si nécessaire
-git checkout postgres
+# 4. Cherry-pick dans postgresql si nécessaire
+git checkout postgresql
 git cherry-pick <commit-hash>
 # Adapter manuellement pour PostgreSQL si besoin
 ```
@@ -57,31 +57,31 @@ git merge feature/mariadb-specific
 
 #### Pour des modifications spécifiques à PostgreSQL
 ```bash
-git checkout postgres
-git checkout -b feature/postgres-specific
+git checkout postgresql
+git checkout -b feature/postgresql-specific
 # Modifications...
-git checkout postgres
-git merge feature/postgres-specific
+git checkout postgresql
+git merge feature/postgresql-specific
 ```
 
 ## 🤖 Protection Automatique
 
 Un workflow GitHub Actions (`prevent-cross-branch-prs.yml`) ferme automatiquement toute pull request qui tente de merger :
-- `postgres` → `main`
-- `main` → `postgres`
+- `postgresql` → `main`
+- `main` → `postgresql`
 
 ## 📋 Checklist pour les Contributeurs
 
-- [ ] Je comprends que `main` et `postgres` sont des branches parallèles
+- [ ] Je comprends que `main` et `postgresql` sont des branches parallèles
 - [ ] Je sais sur quelle branche travailler selon ma modification
 - [ ] Si ma modification affecte les deux versions, je sais que je dois l'appliquer séparément sur chaque branche
-- [ ] Je ne créerai pas de PR de `postgres` vers `main` ou vice-versa
+- [ ] Je ne créerai pas de PR de `postgresql` vers `main` ou vice-versa
 
 ## 🔗 Branches de Développement
 
 Les branches de développement doivent suivre cette nomenclature :
 - `feature/<nom>-mariadb` : pour des features spécifiques MariaDB
-- `feature/<nom>-postgres` : pour des features spécifiques PostgreSQL
+- `feature/<nom>-postgresql` : pour des features spécifiques PostgreSQL
 - `feature/<nom>-common` : pour des features communes (puis cherry-pick sur les deux branches)
 
 ## 📞 Questions
