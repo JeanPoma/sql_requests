@@ -22,7 +22,7 @@ Ce projet propose une progression TDD pour apprendre SQL avec des **données ré
 
 Ce projet est disponible en **deux versions** pour s'adapter à différents contextes professionnels :
 
-### 🟣 Version PostgreSQL (branche actuelle : `postgres`)
+### 🟣 Version PostgreSQL (branche actuelle : `postgresql`)
 **Pour qui ?** Data Scientists, Data Analysts, applications avancées
 - ✅ Syntaxe PostgreSQL + PL/pgSQL
 - ✅ Fonctionnalités analytiques avancées
@@ -43,7 +43,7 @@ git fetch origin main
 git checkout main
 
 # Revenir à la version PostgreSQL
-git checkout postgres
+git checkout postgresql
 ```
 
 **📖 Documentation** : Consultez également le fichier `README_POSTGRES.md` pour des informations détaillées sur les spécificités PostgreSQL et `docs/MARIADB_VS_POSTGRESQL.md` pour un guide comparatif.
@@ -234,7 +234,7 @@ LIMIT 10;
 
 1. **Démarrer la base de données et Adminer**
    ```bash
-   docker compose up -d postgres
+   docker compose up -d postgresql
    docker compose up -d adminer
    ```
 
@@ -304,7 +304,7 @@ LIMIT 10;
 1. Ouvrez votre navigateur : **http://localhost:8080**
 2. Connectez-vous avec :
    - **Système** : PostgreSQL
-   - **Serveur** : postgres
+   - **Serveur** : postgresql
    - **Utilisateur** : root
    - **Mot de passe** : rootpwd
    - **Base de données** : vg
@@ -421,7 +421,7 @@ Ce fichier contient :
 
 ### Les tests de fenêtres échouent
 - Assurez-vous d'utiliser **PostgreSQL ≥ 14**
-- Vérifiez avec : `docker exec -it postgres psql --version`
+- Vérifiez avec : `docker exec -it postgresql psql --version`
 
 ### EXPLAIN n'utilise pas l'index
 - Rendez la clause WHERE plus sélective
@@ -435,7 +435,7 @@ Ce fichier contient :
 ### Réinitialiser complètement le projet
 ```bash
 docker compose down -v
-docker compose up -d postgres adminer
+docker compose up -d postgresql adminer
 # Puis refaire les étapes d'installation
 ```
 

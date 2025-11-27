@@ -17,17 +17,17 @@ jobs:
           echo "Base branch: $BASE_BRANCH"
           echo "Head branch: $HEAD_BRANCH"
 
-          # Check for postgres -> main
-          if [[ "$BASE_BRANCH" == "main" && "$HEAD_BRANCH" == "postgres" ]]; then
+          # Check for postgresql -> main
+          if [[ "$BASE_BRANCH" == "main" && "$HEAD_BRANCH" == "postgresql" ]]; then
             echo "violation=true" >> $GITHUB_OUTPUT
-            echo "message=❌ **Pull Request Bloquée** : La branche \`postgres\` ne peut pas être mergée dans \`main\`.|Ces branches représentent deux versions parallèles du projet (PostgreSQL vs MariaDB) et ne doivent pas être fusionnées.|Consultez \`.github/BRANCH_STRATEGY.md\` pour plus d'informations." >> $GITHUB_OUTPUT
+            echo "message=❌ **Pull Request Bloquée** : La branche \`postgresql\` ne peut pas être mergée dans \`main\`.|Ces branches représentent deux versions parallèles du projet (PostgreSQL vs MariaDB) et ne doivent pas être fusionnées.|Consultez \`.github/BRANCH_STRATEGY.md\` pour plus d'informations." >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Check for main -> postgres
-          if [[ "$BASE_BRANCH" == "postgres" && "$HEAD_BRANCH" == "main" ]]; then
+          # Check for main -> postgresql
+          if [[ "$BASE_BRANCH" == "postgresql" && "$HEAD_BRANCH" == "main" ]]; then
             echo "violation=true" >> $GITHUB_OUTPUT
-            echo "message=❌ **Pull Request Bloquée** : La branche \`main\` ne peut pas être mergée dans \`postgres\`.|Ces branches représentent deux versions parallèles du projet (MariaDB vs PostgreSQL) et ne doivent pas être fusionnées.|Consultez \`.github/BRANCH_STRATEGY.md\` pour plus d'informations." >> $GITHUB_OUTPUT
+            echo "message=❌ **Pull Request Bloquée** : La branche \`main\` ne peut pas être mergée dans \`postgresql\`.|Ces branches représentent deux versions parallèles du projet (MariaDB vs PostgreSQL) et ne doivent pas être fusionnées.|Consultez \`.github/BRANCH_STRATEGY.md\` pour plus d'informations." >> $GITHUB_OUTPUT
             exit 0
           fi
 

@@ -2,11 +2,11 @@
 
 **IMPORTANT** : Ce repository utilise deux branches parallèles qui ne doivent JAMAIS être mergées entre elles :
 - 🔵 `main` : Version MariaDB
-- 🟣 `postgres` : Version PostgreSQL
+- 🟣 `postgresql` : Version PostgreSQL
 
 **Cochez pour confirmer** :
-- [ ] Je confirme que cette PR ne tente **PAS** de merger `postgres` dans `main`
-- [ ] Je confirme que cette PR ne tente **PAS** de merger `main` dans `postgres`
+- [ ] Je confirme que cette PR ne tente **PAS** de merger `postgresql` dans `main`
+- [ ] Je confirme que cette PR ne tente **PAS** de merger `main` dans `postgresql`
 - [ ] J'ai lu [`.github/BRANCH_STRATEGY.md`](.github/BRANCH_STRATEGY.md)
 
 ---
@@ -25,7 +25,7 @@ Sélectionnez le type de modification :
 ## Version Concernée
 
 - [ ] 🔵 **MariaDB uniquement** (branche `main`)
-- [ ] 🟣 **PostgreSQL uniquement** (branche `postgres`)
+- [ ] 🟣 **PostgreSQL uniquement** (branche `postgresql`)
 - [ ] 🔄 **Commune aux deux versions** (documentation générale, structure projet, etc.)
 
 ## Description

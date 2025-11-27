@@ -1,12 +1,12 @@
 # Configuration GitHub Recommandée
 
-Ce document décrit les paramètres GitHub recommandés pour ce repository afin de maintenir la séparation entre les branches `main` (MariaDB) et `postgres` (PostgreSQL).
+Ce document décrit les paramètres GitHub recommandés pour ce repository afin de maintenir la séparation entre les branches `main` (MariaDB) et `postgresql` (PostgreSQL).
 
 ## 🛡️ Protection Automatique (Déjà en Place)
 
 ✅ **Workflow GitHub Actions** : `.github/workflows/prevent-cross-branch-prs.yml`
-- Ferme automatiquement les PRs de `postgres` → `main`
-- Ferme automatiquement les PRs de `main` → `postgres`
+- Ferme automatiquement les PRs de `postgresql` → `main`
+- Ferme automatiquement les PRs de `main` → `postgresql`
 - Ajoute un commentaire explicatif
 
 ## ⚙️ Configuration Manuelle (Settings GitHub)
@@ -32,10 +32,10 @@ Cliquez sur "Add rule" et configurez :
 - ✅ **Dismiss stale pull request approvals when new commits are pushed**
 - ⚠️ **Do not allow bypassing the above settings**
 
-#### Protection pour `postgres`
+#### Protection pour `postgresql`
 
 Cliquez sur "Add rule" et configurez :
-- **Branch name pattern** : `postgres`
+- **Branch name pattern** : `postgresql`
 - ✅ **Require a pull request before merging**
 - ✅ **Require approvals** : 1 (si vous travaillez en équipe)
 - ✅ **Dismiss stale pull request approvals when new commits are pushed**
@@ -74,7 +74,7 @@ Cliquez sur "Add rule" et configurez :
 **Description Recommandée** :
 ```
 📚 Cours SQL avec TDD et données réelles (RAWG dataset).
-Disponible en 2 versions : MariaDB (main) et PostgreSQL (postgres).
+Disponible en 2 versions : MariaDB (main) et PostgreSQL (postgresql).
 38 exercices du débutant à l'expert.
 ```
 
@@ -94,13 +94,13 @@ Créez les labels suivants pour faciliter la gestion :
 | Label | Couleur | Description |
 |-------|---------|-------------|
 | `mariadb` | `#0052CC` | Spécifique à la version MariaDB (branche main) |
-| `postgresql` | `#336791` | Spécifique à la version PostgreSQL (branche postgres) |
+| `postgresql` | `#336791` | Spécifique à la version PostgreSQL (branche postgresql) |
 | `common` | `#7057FF` | Affecte les deux versions |
 | `documentation` | `#0075CA` | Améliorations de la documentation |
 | `exercise` | `#008672` | Lié aux exercices SQL |
 | `test` | `#FBCA04` | Tests et validation |
 | `bug-mariadb` | `#D73A4A` | Bug dans la version MariaDB |
-| `bug-postgres` | `#D73A4A` | Bug dans la version PostgreSQL |
+| `bug-postgresql` | `#D73A4A` | Bug dans la version PostgreSQL |
 
 ## 📋 Pull Request Template (Optionnel)
 
@@ -119,10 +119,10 @@ Si vous souhaitez ajouter un template de PR, créez le fichier `.github/pull_req
 
 ## Branche cible
 
-**⚠️ ATTENTION** : Les branches `main` et `postgres` ne doivent PAS être mergées entre elles.
+**⚠️ ATTENTION** : Les branches `main` et `postgresql` ne doivent PAS être mergées entre elles.
 
-- [ ] Je confirme que cette PR ne tente pas de merger `postgres` dans `main`
-- [ ] Je confirme que cette PR ne tente pas de merger `main` dans `postgres`
+- [ ] Je confirme que cette PR ne tente pas de merger `postgresql` dans `main`
+- [ ] Je confirme que cette PR ne tente pas de merger `main` dans `postgresql`
 - [ ] J'ai lu `.github/BRANCH_STRATEGY.md`
 
 ## Description
@@ -186,7 +186,7 @@ Configurez vos préférences de notification pour :
 ## ✅ Vérification de la Configuration
 
 Une fois configuré, vérifiez :
-- [ ] Le workflow Actions fonctionne (créez une PR test postgres→main pour vérifier)
+- [ ] Le workflow Actions fonctionne (créez une PR test postgresql→main pour vérifier)
 - [ ] Les branch protection rules sont actives
 - [ ] Les labels sont créés
 - [ ] La description du repository est claire
