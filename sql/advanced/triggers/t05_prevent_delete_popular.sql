@@ -1,11 +1,11 @@
 -- ============================================
 -- EXERCICE: Trigger BEFORE DELETE (protection)
 -- NIVEAU: 🔴 Avancé - Triggers
--- CONCEPTS: BEFORE DELETE, protection, SIGNAL
+-- CONCEPTS: BEFORE DELETE, protection, RAISE EXCEPTION
 --
--- 📚 Documentation MariaDB :
--- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
--- - [SIGNAL](https://mariadb.com/kb/en/signal/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html)
+-- - [RAISE](https://www.postgresql.org/docs/current/plpgsql-errors-and-messages.html)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Créer un trigger qui empêche la suppression de données importantes
@@ -13,7 +13,7 @@
 --
 -- 💡 TRIGGERS DE PROTECTION:
 -- Les triggers BEFORE DELETE peuvent empêcher des suppressions
--- accidentelles ou non autorisées en utilisant SIGNAL.
+-- accidentelles ou non autorisées en utilisant RAISE EXCEPTION.
 --
 -- Cas d'usage:
 -- - Empêcher suppression de données critiques
@@ -22,30 +22,40 @@
 --
 -- ============================================
 -- CONSIGNE:
--- Créez un trigger 'trg_prevent_delete_popular' qui empêche
+-- Créez une fonction trigger et un trigger qui empêche
 -- la suppression de jeux très populaires.
 --
--- Nom: trg_prevent_delete_popular
+-- Étape 1: Créer la fonction trigger prevent_delete_popular
+-- Étape 2: Créer le trigger trg_prevent_delete_popular
+--
 -- Table: games
 -- Moment: BEFORE DELETE
 --
 -- Règle de protection:
 -- Si OLD.ratings_count > 1000, alors empêcher la suppression
--- avec SIGNAL et message 'Cannot delete popular game with many ratings'
+-- avec RAISE EXCEPTION 'Cannot delete popular game with many ratings'
 --
--- 💡 SYNTAXE:
--- DELIMITER //
--- CREATE TRIGGER trg_prevent_delete_popular
--- BEFORE DELETE ON games
--- FOR EACH ROW
+-- 💡 SYNTAXE POSTGRESQL:
+-- -- Étape 1: Fonction trigger
+-- CREATE OR REPLACE FUNCTION prevent_delete_popular()
+-- RETURNS TRIGGER
+-- LANGUAGE plpgsql
+-- AS \$\$
 -- BEGIN
 --     -- OLD contient les valeurs de la ligne à supprimer
 --     IF OLD.ratings_count > 1000 THEN
---         SIGNAL SQLSTATE '45000'
---         SET MESSAGE_TEXT = 'Cannot delete popular game with many ratings';
+--         RAISE EXCEPTION 'Cannot delete popular game with many ratings';
 --     END IF;
--- END //
--- DELIMITER ;
+--
+--     RETURN OLD;  -- Autoriser la suppression
+-- END;
+-- \$\$;
+--
+-- -- Étape 2: Trigger
+-- CREATE TRIGGER trg_prevent_delete_popular
+-- BEFORE DELETE ON games
+-- FOR EACH ROW
+-- EXECUTE FUNCTION prevent_delete_popular();
 --
 -- 💡 UTILISATION:
 -- -- Essayer de supprimer un jeu populaire (devrait échouer)
@@ -55,27 +65,46 @@
 -- -- Supprimer un jeu peu populaire (devrait réussir)
 -- DELETE FROM games WHERE id = 456 AND ratings_count <= 1000;
 --
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. RAISE EXCEPTION au lieu de SIGNAL SQLSTATE '45000'
+-- 2. Fonction séparée (RETURNS TRIGGER)
+-- 3. RETURN OLD pour valider (RETURN NULL pour annuler)
+-- 4. Pas de SET MESSAGE_TEXT (message direct dans RAISE)
+--
 -- 💡 ALTERNATIVE: SOFT DELETE
 -- Au lieu d'empêcher la suppression, on peut faire un "soft delete":
 -- - Ajouter une colonne 'deleted_at' à la table
 -- - Dans le trigger BEFORE DELETE, faire un UPDATE au lieu de DELETE
--- - Annuler le DELETE avec SIGNAL (ou le trigger ne fait rien)
+-- - Annuler le DELETE avec RETURN NULL
 --
 -- Exemple de soft delete:
--- BEFORE DELETE ON games
+-- CREATE OR REPLACE FUNCTION soft_delete_game()
+-- RETURNS TRIGGER
+-- LANGUAGE plpgsql
+-- AS \$\$
 -- BEGIN
---     UPDATE games SET deleted_at = NOW() WHERE id = OLD.id;
---     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Soft deleted';
--- END
+--     UPDATE games
+--     SET deleted_at = NOW()
+--     WHERE id = OLD.id;
+--
+--     RETURN NULL;  -- Annuler le DELETE
+-- END;
+-- \$\$;
+--
+-- 💡 RETURN dans BEFORE DELETE:
+-- - RETURN OLD : autoriser la suppression
+-- - RETURN NULL : annuler la suppression (soft delete)
+-- - RAISE EXCEPTION : annuler avec erreur
 --
 -- 💡 ATTENTION:
 -- - Le trigger s'applique à TOUTES les suppressions (même avec WHERE)
 -- - Pensez aux suppressions en cascade (foreign keys)
--- - Pour désactiver temporairement: DROP TRIGGER
+-- - Pour désactiver temporairement: DROP TRIGGER ou ALTER TABLE DISABLE TRIGGER
 --
 -- 💡 CAS D'USAGE:
 -- - Protection contre suppressions accidentelles
 -- - Conformité (conservation obligatoire de certaines données)
 -- - Workflow d'approbation (seul un admin peut supprimer)
+-- - Soft delete généralisé
 -- ============================================
 

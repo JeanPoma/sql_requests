@@ -3,9 +3,9 @@
 -- NIVEAU: 🔴 Avancé - Triggers
 -- CONCEPTS: AFTER UPDATE, conditional logic, notifications
 --
--- 📚 Documentation MariaDB :
--- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
--- - [IF Statement](https://mariadb.com/kb/en/if/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html)
+-- - [Conditional Triggers](https://www.postgresql.org/docs/current/sql-createtrigger.html#SQL-CREATETRIGGER-NOTES)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Créer un trigger qui détecte des événements spécifiques
@@ -21,21 +21,13 @@
 --
 -- ============================================
 -- CONSIGNE:
--- Créez une table 'notifications' puis un trigger qui détecte
--- quand un jeu atteint un score Metacritic >= 95.
+-- Créez une table 'notifications' puis une fonction trigger et un trigger
+-- qui détecte quand un jeu atteint un score Metacritic >= 95.
 --
 -- Étape 1: Créer la table notifications
--- CREATE TABLE IF NOT EXISTS notifications (
---     notif_id INT AUTO_INCREMENT PRIMARY KEY,
---     game_id INT,
---     game_name VARCHAR(255),
---     message TEXT,
---     created_at DATETIME,
---     INDEX idx_notif_time (created_at)
--- );
+-- Étape 2: Créer la fonction trigger notify_high_score
+-- Étape 3: Créer le trigger trg_notify_high_score
 --
--- Étape 2: Créer le trigger
--- Nom: trg_notify_high_score
 -- Table: games
 -- Moment: AFTER UPDATE
 --
@@ -47,11 +39,22 @@
 -- - message: 'High score achieved: [score]'
 -- - created_at: NOW()
 --
--- 💡 SYNTAXE:
--- DELIMITER //
--- CREATE TRIGGER trg_notify_high_score
--- AFTER UPDATE ON games
--- FOR EACH ROW
+-- 💡 SYNTAXE POSTGRESQL:
+-- -- Étape 1: Table notifications
+-- CREATE TABLE IF NOT EXISTS notifications (
+--     notif_id SERIAL PRIMARY KEY,
+--     game_id INT,
+--     game_name VARCHAR(255),
+--     message TEXT,
+--     created_at TIMESTAMP DEFAULT NOW()
+-- );
+-- CREATE INDEX IF NOT EXISTS idx_notif_time ON notifications(created_at);
+--
+-- -- Étape 2: Fonction trigger
+-- CREATE OR REPLACE FUNCTION notify_high_score()
+-- RETURNS TRIGGER
+-- LANGUAGE plpgsql
+-- AS \$\$
 -- BEGIN
 --     -- Détecter si le jeu vient d'atteindre un score >= 95
 --     IF NEW.metacritic >= 95 AND
@@ -61,12 +64,20 @@
 --         VALUES (
 --             NEW.id,
 --             NEW.name,
---             CONCAT('High score achieved: ', NEW.metacritic),
+--             'High score achieved: ' || NEW.metacritic,
 --             NOW()
 --         );
 --     END IF;
--- END //
--- DELIMITER ;
+--
+--     RETURN NEW;
+-- END;
+-- \$\$;
+--
+-- -- Étape 3: Trigger
+-- CREATE TRIGGER trg_notify_high_score
+-- AFTER UPDATE ON games
+-- FOR EACH ROW
+-- EXECUTE FUNCTION notify_high_score();
 --
 -- 💡 UTILISATION:
 -- -- Mettre à jour un jeu pour atteindre 95+
@@ -75,19 +86,33 @@
 -- -- Vérifier les notifications
 -- SELECT * FROM notifications ORDER BY created_at DESC;
 --
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. || pour concaténation (au lieu de CONCAT)
+-- 2. Fonction séparée (RETURNS TRIGGER)
+-- 3. TEXT au lieu de TEXT (même chose mais explicite)
+-- 4. TIMESTAMP au lieu de DATETIME
+--
 -- 💡 POURQUOI AFTER UPDATE ?
 -- AFTER UPDATE garantit que:
 -- - La modification a bien été appliquée
 -- - Les contraintes sont validées
 -- - On peut utiliser NEW.id en toute sécurité
 --
--- 💡 CONCAT:
--- CONCAT() permet de concaténer des chaînes de caractères.
--- Exemple: CONCAT('Score: ', NEW.metacritic) → 'Score: 96'
+-- 💡 OPTIMISATION avec WHEN:
+-- PostgreSQL permet d'ajouter une condition WHEN au trigger:
+--
+-- CREATE TRIGGER trg_notify_high_score
+-- AFTER UPDATE OF metacritic ON games
+-- FOR EACH ROW
+-- WHEN (NEW.metacritic >= 95 AND (OLD.metacritic IS NULL OR OLD.metacritic < 95))
+-- EXECUTE FUNCTION notify_high_score();
+--
+-- Cela évite d'appeler la fonction si la condition n'est pas remplie.
 --
 -- 💡 CAS D'USAGE RÉELS:
 -- - Alertes métier (stock faible, seuil atteint)
 -- - Gamification (badges, achievements)
 -- - Monitoring (détecter des anomalies)
+-- - Notifications push/email (avec queue externe)
 -- ============================================
 

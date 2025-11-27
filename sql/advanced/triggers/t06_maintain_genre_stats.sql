@@ -3,63 +3,67 @@
 -- NIVEAU: 🔴 Avancé - Triggers
 -- CONCEPTS: Materialized views, denormalization, performance
 --
--- 📚 Documentation MariaDB :
--- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
--- - [INSERT ON DUPLICATE KEY UPDATE](https://mariadb.com/kb/en/insert-on-duplicate-key-update/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html)
+-- - [Materialized Views](https://www.postgresql.org/docs/current/sql-creatematerializedview.html)
+-- - [INSERT ON CONFLICT](https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFLICT)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Créer une "vue matérialisée" (table de statistiques)
 -- maintenue automatiquement par des triggers.
 --
 -- 💡 VUE MATÉRIALISÉE:
--- MariaDB n'a pas de vraies vues matérialisées, mais on peut
--- les simuler avec:
--- - Une table de stats
--- - Des triggers qui la mettent à jour automatiquement
+-- PostgreSQL a des vraies vues matérialisées natives, mais
+-- pour l'exercice, on simule avec table + triggers.
 --
 -- Avantages:
 -- - Performance (pas de calcul à chaque SELECT)
--- - Stats toujours à jour
+-- - Stats toujours à jour (grâce aux triggers)
 --
 -- Inconvénients:
 -- - Overhead sur INSERT/UPDATE/DELETE
 -- - Complexité accrue
 --
+-- ⚠️ NOTE: En production PostgreSQL, préférez les vraies
+-- MATERIALIZED VIEW avec REFRESH MATERIALIZED VIEW
+--
 -- ============================================
 -- CONSIGNE:
 -- Créez une table 'genre_stats' qui maintient des statistiques
--- par genre, puis des triggers pour la mettre à jour.
+-- par genre, puis une fonction trigger et un trigger pour la mettre à jour.
 --
 -- Étape 1: Créer la table genre_stats
--- CREATE TABLE IF NOT EXISTS genre_stats (
---     genre_id INT PRIMARY KEY,
---     genre_name VARCHAR(100),
---     total_games INT DEFAULT 0,
---     avg_metacritic DECIMAL(5,2),
---     last_updated DATETIME,
---     FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
--- );
+-- Étape 2: Créer la fonction trigger maintain_genre_stats
+-- Étape 3: Créer le trigger trg_maintain_genre_stats_insert
 --
--- Étape 2: Créer le trigger pour INSERT
--- Nom: trg_maintain_genre_stats_insert
 -- Table: game_genres
 -- Moment: AFTER INSERT
 --
 -- Action:
 -- Recalculer les stats du genre concerné et mettre à jour genre_stats
--- en utilisant INSERT ... ON DUPLICATE KEY UPDATE
+-- en utilisant INSERT ... ON CONFLICT ... DO UPDATE
 --
--- 💡 SYNTAXE:
--- DELIMITER //
--- CREATE TRIGGER trg_maintain_genre_stats_insert
--- AFTER INSERT ON game_genres
--- FOR EACH ROW
+-- 💡 SYNTAXE POSTGRESQL:
+-- -- Étape 1: Table de stats
+-- CREATE TABLE IF NOT EXISTS genre_stats (
+--     genre_id INT PRIMARY KEY,
+--     genre_name VARCHAR(100),
+--     total_games INT DEFAULT 0,
+--     avg_metacritic DECIMAL(5,2),
+--     last_updated TIMESTAMP DEFAULT NOW(),
+--     FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE CASCADE
+-- );
+--
+-- -- Étape 2: Fonction trigger
+-- CREATE OR REPLACE FUNCTION maintain_genre_stats()
+-- RETURNS TRIGGER
+-- LANGUAGE plpgsql
+-- AS \$\$
+-- DECLARE
+--     v_total INT;
+--     v_avg DECIMAL(5,2);
+--     v_genre_name VARCHAR(100);
 -- BEGIN
---     -- Variables pour stocker les stats
---     DECLARE v_total INT;
---     DECLARE v_avg DECIMAL(5,2);
---     DECLARE v_genre_name VARCHAR(100);
---
 --     -- Récupérer le nom du genre
 --     SELECT name INTO v_genre_name FROM genres WHERE id = NEW.genre_id;
 --
@@ -71,22 +75,23 @@
 --     WHERE gg.genre_id = NEW.genre_id
 --     AND g.metacritic IS NOT NULL;
 --
---     -- Mettre à jour ou insérer
+--     -- Mettre à jour ou insérer (UPSERT)
 --     INSERT INTO genre_stats (genre_id, genre_name, total_games, avg_metacritic, last_updated)
 --     VALUES (NEW.genre_id, v_genre_name, v_total, v_avg, NOW())
---     ON DUPLICATE KEY UPDATE
---         total_games = v_total,
---         avg_metacritic = v_avg,
---         last_updated = NOW();
--- END //
--- DELIMITER ;
+--     ON CONFLICT (genre_id) DO UPDATE SET
+--         total_games = EXCLUDED.total_games,
+--         avg_metacritic = EXCLUDED.avg_metacritic,
+--         last_updated = EXCLUDED.last_updated;
 --
--- 💡 INSERT ON DUPLICATE KEY UPDATE:
--- Cette syntaxe permet de faire un "UPSERT":
--- - Si la clé primaire existe → UPDATE
--- - Si la clé primaire n'existe pas → INSERT
+--     RETURN NEW;
+-- END;
+-- \$\$;
 --
--- Très utile pour maintenir des tables de stats.
+-- -- Étape 3: Trigger
+-- CREATE TRIGGER trg_maintain_genre_stats_insert
+-- AFTER INSERT ON game_genres
+-- FOR EACH ROW
+-- EXECUTE FUNCTION maintain_genre_stats();
 --
 -- 💡 UTILISATION:
 -- -- Ajouter un jeu à un genre
@@ -95,22 +100,49 @@
 -- -- Vérifier les stats
 -- SELECT * FROM genre_stats WHERE genre_id = 5;
 --
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. ON CONFLICT DO UPDATE au lieu de ON DUPLICATE KEY UPDATE
+-- 2. EXCLUDED pour référencer les valeurs tentées
+-- 3. TIMESTAMP au lieu de DATETIME
+-- 4. Fonction séparée (RETURNS TRIGGER)
+--
+-- 💡 INSERT ON CONFLICT (UPSERT):
+-- PostgreSQL utilise ON CONFLICT pour les "UPSERT":
+-- - Si la clé primaire existe → UPDATE
+-- - Si la clé primaire n'existe pas → INSERT
+--
+-- EXCLUDED fait référence aux valeurs de la ligne tentée:
+-- INSERT INTO t VALUES (1, 'new')
+-- ON CONFLICT (id) DO UPDATE SET col = EXCLUDED.col
+--                                    -- ^^^^^^^^ valeur 'new'
+--
 -- 💡 POUR ALLER PLUS LOIN:
 -- Dans un système complet, il faudrait aussi des triggers pour:
 -- - AFTER UPDATE sur games (quand metacritic change)
 -- - AFTER DELETE sur game_genres
 -- - AFTER DELETE sur games
 --
--- 💡 ALTERNATIVE: RECALCUL PÉRIODIQUE
--- Au lieu de triggers (overhead sur chaque opération),
--- on peut recalculer les stats périodiquement (cron job):
--- - Plus simple
--- - Moins de load sur les écritures
--- - Stats légèrement en retard
+-- 💡 ALTERNATIVE: VRAIE VUE MATÉRIALISÉE PostgreSQL
+-- CREATE MATERIALIZED VIEW genre_stats AS
+-- SELECT g.id as genre_id, g.name as genre_name,
+--        COUNT(*) as total_games,
+--        ROUND(AVG(ga.metacritic), 2) as avg_metacritic
+-- FROM genres g
+-- JOIN game_genres gg ON g.id = gg.genre_id
+-- JOIN games ga ON gg.game_id = ga.id
+-- WHERE ga.metacritic IS NOT NULL
+-- GROUP BY g.id, g.name;
+--
+-- -- Rafraîchir
+-- REFRESH MATERIALIZED VIEW genre_stats;
+--
+-- -- Rafraîchir sans bloquer les lectures
+-- REFRESH MATERIALIZED VIEW CONCURRENTLY genre_stats;
 --
 -- 💡 CAS D'USAGE:
 -- - Dashboards temps réel
 -- - Leaderboards
 -- - Statistiques complexes coûteuses à calculer
+-- - Cache de données agrégées
 -- ============================================
 

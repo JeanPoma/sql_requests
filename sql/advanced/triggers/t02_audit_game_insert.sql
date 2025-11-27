@@ -3,9 +3,10 @@
 -- NIVEAU: 🔴 Avancé - Triggers
 -- CONCEPTS: AFTER INSERT, audit trail, logging
 --
--- 📚 Documentation MariaDB :
--- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
--- - [NOW()](https://mariadb.com/kb/en/now/)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html)
+-- - [Trigger Functions](https://www.postgresql.org/docs/current/plpgsql-trigger.html)
+-- - [NOW()](https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-CURRENT)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Créer un trigger qui enregistre automatiquement toutes les
@@ -22,21 +23,13 @@
 --
 -- ============================================
 -- CONSIGNE:
--- Créez d'abord une table d'audit 'games_audit', puis un trigger
--- 'trg_audit_game_insert' qui enregistre chaque insertion.
+-- Créez d'abord une table d'audit 'games_audit', puis une fonction trigger
+-- et un trigger qui enregistre chaque insertion.
 --
 -- Étape 1: Créer la table games_audit
--- CREATE TABLE IF NOT EXISTS games_audit (
---     audit_id INT AUTO_INCREMENT PRIMARY KEY,
---     game_id INT,
---     game_name VARCHAR(255),
---     operation VARCHAR(10),
---     operation_time DATETIME,
---     INDEX idx_audit_time (operation_time)
--- );
+-- Étape 2: Créer la fonction trigger audit_game_insert
+-- Étape 3: Créer le trigger trg_audit_game_insert
 --
--- Étape 2: Créer le trigger
--- Nom: trg_audit_game_insert
 -- Table: games
 -- Moment: AFTER INSERT
 --
@@ -47,16 +40,35 @@
 -- - operation: 'INSERT'
 -- - operation_time: NOW()
 --
--- 💡 SYNTAXE:
--- DELIMITER //
--- CREATE TRIGGER trg_audit_game_insert
--- AFTER INSERT ON games
--- FOR EACH ROW
+-- 💡 SYNTAXE POSTGRESQL:
+-- -- Étape 1: Table d'audit
+-- CREATE TABLE IF NOT EXISTS games_audit (
+--     audit_id SERIAL PRIMARY KEY,
+--     game_id INT,
+--     game_name VARCHAR(255),
+--     operation VARCHAR(10),
+--     operation_time TIMESTAMP DEFAULT NOW()
+-- );
+-- CREATE INDEX IF NOT EXISTS idx_audit_time ON games_audit(operation_time);
+--
+-- -- Étape 2: Fonction trigger
+-- CREATE OR REPLACE FUNCTION audit_game_insert()
+-- RETURNS TRIGGER
+-- LANGUAGE plpgsql
+-- AS \$\$
 -- BEGIN
 --     INSERT INTO games_audit (game_id, game_name, operation, operation_time)
 --     VALUES (NEW.id, NEW.name, 'INSERT', NOW());
--- END //
--- DELIMITER ;
+--
+--     RETURN NEW;  -- Pour AFTER triggers, valeur ignorée mais obligatoire
+-- END;
+-- \$\$;
+--
+-- -- Étape 3: Trigger
+-- CREATE TRIGGER trg_audit_game_insert
+-- AFTER INSERT ON games
+-- FOR EACH ROW
+-- EXECUTE FUNCTION audit_game_insert();
 --
 -- 💡 UTILISATION:
 -- -- Insérer un jeu
@@ -64,6 +76,13 @@
 --
 -- -- Vérifier l'audit
 -- SELECT * FROM games_audit WHERE operation = 'INSERT' ORDER BY operation_time DESC;
+--
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. SERIAL au lieu de AUTO_INCREMENT
+-- 2. TIMESTAMP au lieu de DATETIME
+-- 3. Fonction séparée (RETURNS TRIGGER)
+-- 4. CREATE INDEX IF NOT EXISTS (plus robuste)
+-- 5. EXECUTE FUNCTION au lieu de code inline
 --
 -- 💡 POURQUOI AFTER et pas BEFORE ?
 -- AFTER INSERT garantit que:
@@ -75,5 +94,13 @@
 -- - Conformité réglementaire (banque, santé)
 -- - Traçabilité des modifications sensibles
 -- - Statistiques d'utilisation
+-- - Détection de fraudes
+--
+-- 💡 POUR ALLER PLUS LOIN:
+-- Ajouter des colonnes supplémentaires:
+-- - user_name VARCHAR(100) : qui a fait la modification
+-- - ip_address INET : depuis quelle adresse
+-- - old_value JSONB : ancienne valeur (pour UPDATE)
+-- - new_value JSONB : nouvelle valeur
 -- ============================================
 

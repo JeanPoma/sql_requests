@@ -3,9 +3,9 @@
 -- NIVEAU: 🔴 Avancé - Triggers
 -- CONCEPTS: BEFORE UPDATE, OLD vs NEW, historique
 --
--- 📚 Documentation MariaDB :
--- - [CREATE TRIGGER](https://mariadb.com/kb/en/create-trigger/)
--- - [Trigger OLD and NEW](https://mariadb.com/kb/en/trigger-overview/#old-and-new)
+-- 📚 Documentation PostgreSQL :
+-- - [CREATE TRIGGER](https://www.postgresql.org/docs/current/sql-createtrigger.html)
+-- - [Trigger OLD and NEW](https://www.postgresql.org/docs/current/plpgsql-trigger.html#PLPGSQL-DML-TRIGGER)
 --
 -- 🎯 OBJECTIF PÉDAGOGIQUE:
 -- Créer un trigger qui conserve l'historique des modifications
@@ -20,24 +20,13 @@
 --
 -- ============================================
 -- CONSIGNE:
--- Créez une table d'historique 'games_history', puis un trigger
--- 'trg_track_game_updates' qui enregistre les modifications.
+-- Créez une table d'historique 'games_history', puis une fonction
+-- trigger et un trigger qui enregistre les modifications.
 --
 -- Étape 1: Créer la table games_history
--- CREATE TABLE IF NOT EXISTS games_history (
---     history_id INT AUTO_INCREMENT PRIMARY KEY,
---     game_id INT,
---     old_name VARCHAR(255),
---     new_name VARCHAR(255),
---     old_metacritic INT,
---     new_metacritic INT,
---     changed_at DATETIME,
---     INDEX idx_history_game (game_id),
---     INDEX idx_history_time (changed_at)
--- );
+-- Étape 2: Créer la fonction trigger track_game_updates
+-- Étape 3: Créer le trigger trg_track_game_updates
 --
--- Étape 2: Créer le trigger
--- Nom: trg_track_game_updates
 -- Table: games
 -- Moment: BEFORE UPDATE
 --
@@ -51,17 +40,29 @@
 -- - new_metacritic: NEW.metacritic
 -- - changed_at: NOW()
 --
--- 💡 SYNTAXE:
--- DELIMITER //
--- CREATE TRIGGER trg_track_game_updates
--- BEFORE UPDATE ON games
--- FOR EACH ROW
+-- 💡 SYNTAXE POSTGRESQL:
+-- -- Étape 1: Table historique
+-- CREATE TABLE IF NOT EXISTS games_history (
+--     history_id SERIAL PRIMARY KEY,
+--     game_id INT,
+--     old_name VARCHAR(255),
+--     new_name VARCHAR(255),
+--     old_metacritic SMALLINT,
+--     new_metacritic SMALLINT,
+--     changed_at TIMESTAMP DEFAULT NOW()
+-- );
+-- CREATE INDEX IF NOT EXISTS idx_history_game ON games_history(game_id);
+-- CREATE INDEX IF NOT EXISTS idx_history_time ON games_history(changed_at);
+--
+-- -- Étape 2: Fonction trigger
+-- CREATE OR REPLACE FUNCTION track_game_updates()
+-- RETURNS TRIGGER
+-- LANGUAGE plpgsql
+-- AS \$\$
 -- BEGIN
 --     -- Enregistrer seulement si quelque chose a changé
---     IF OLD.name != NEW.name OR
---        OLD.metacritic != NEW.metacritic OR
---        (OLD.metacritic IS NULL AND NEW.metacritic IS NOT NULL) OR
---        (OLD.metacritic IS NOT NULL AND NEW.metacritic IS NULL)
+--     IF (OLD.name IS DISTINCT FROM NEW.name) OR
+--        (OLD.metacritic IS DISTINCT FROM NEW.metacritic)
 --     THEN
 --         INSERT INTO games_history (
 --             game_id, old_name, new_name,
@@ -72,8 +73,16 @@
 --             OLD.metacritic, NEW.metacritic, NOW()
 --         );
 --     END IF;
--- END //
--- DELIMITER ;
+--
+--     RETURN NEW;
+-- END;
+-- \$\$;
+--
+-- -- Étape 3: Trigger
+-- CREATE TRIGGER trg_track_game_updates
+-- BEFORE UPDATE ON games
+-- FOR EACH ROW
+-- EXECUTE FUNCTION track_game_updates();
 --
 -- 💡 UTILISATION:
 -- -- Mettre à jour un jeu
@@ -82,14 +91,28 @@
 -- -- Vérifier l'historique
 -- SELECT * FROM games_history WHERE game_id = 123 ORDER BY changed_at DESC;
 --
--- 💡 ATTENTION AUX NULL:
--- Comparer NULL avec != ne fonctionne pas comme prévu.
--- NULL != NULL retourne NULL (ni TRUE ni FALSE).
--- Il faut tester explicitement IS NULL / IS NOT NULL.
+-- ⚠️ DIFFÉRENCES POSTGRESQL vs MariaDB:
+-- 1. IS DISTINCT FROM au lieu de !=  (gère NULL correctement)
+-- 2. Fonction séparée (RETURNS TRIGGER)
+-- 3. TIMESTAMP au lieu de DATETIME
+-- 4. SERIAL au lieu de AUTO_INCREMENT
+--
+-- 💡 IS DISTINCT FROM:
+-- Opérateur PostgreSQL qui gère NULL correctement:
+-- - NULL IS DISTINCT FROM NULL → FALSE
+-- - NULL IS DISTINCT FROM 5 → TRUE
+-- - 5 IS DISTINCT FROM 5 → FALSE
+-- - 5 IS DISTINCT FROM 10 → TRUE
+--
+-- Équivalent à (mais plus simple):
+-- (OLD.col != NEW.col) OR
+-- (OLD.col IS NULL AND NEW.col IS NOT NULL) OR
+-- (OLD.col IS NOT NULL AND NEW.col IS NULL)
 --
 -- 💡 CAS D'USAGE:
 -- - Audit trail complet (qui a changé quoi et quand)
 -- - Rollback manuel (restaurer une ancienne valeur)
 -- - Analyse des tendances (évolution des scores dans le temps)
+-- - Conformité (conserver historique des modifications)
 -- ============================================
 
