@@ -4,6 +4,7 @@ Ce projet propose une progression TDD pour apprendre SQL avec des **données ré
 
 ## 📑 Table des matières
 
+- [🗄️ Choisir votre SGBD](#️-choisir-votre-sgbd)
 - [🎯 Objectifs](#-objectifs)
 - [🎓 Parcours d'apprentissage](#-parcours-dapprentissage)
 - [📚 Avant de commencer](#-avant-de-commencer)
@@ -14,6 +15,40 @@ Ce projet propose une progression TDD pour apprendre SQL avec des **données ré
 - [💡 Conseils pédagogiques](#-conseils-pédagogiques)
 - [🔧 Dépannage](#-dépannage)
 - [📄 Licence & Données](#-licence--données)
+
+---
+
+## 🗄️ Choisir votre SGBD
+
+Ce projet est disponible en **deux versions** pour s'adapter à différents contextes professionnels :
+
+### 🔵 Version MariaDB (branche actuelle : `main`)
+**Pour qui ?** Développeurs web, applications classiques
+- ✅ Syntaxe MariaDB/MySQL (la plus répandue)
+- ✅ Compatible avec la majorité des stacks web
+- ✅ Excellente performance pour applications OLTP
+
+### 🟣 Version PostgreSQL (branche : `postgres`)
+**Pour qui ?** Data Scientists, Data Analysts, applications avancées
+- ✅ Syntaxe PostgreSQL + PL/pgSQL
+- ✅ Fonctionnalités analytiques avancées
+- ✅ Standard dans les environnements data science
+- ✅ Vues matérialisées natives, meilleurs types de données
+
+### 🔄 Comment changer de version ?
+
+```bash
+# Passer à la version PostgreSQL
+git fetch origin postgres
+git checkout postgres
+
+# Revenir à la version MariaDB
+git checkout main
+```
+
+**📖 Documentation complète PostgreSQL** : Une fois sur la branche `postgres`, consultez le fichier `README_POSTGRES.md` pour des instructions spécifiques.
+
+**💡 Note** : Les deux versions contiennent exactement les **mêmes 38 exercices** (q00-q20 + 18 exercices avancés), seule la syntaxe SQL diffère.
 
 ---
 
